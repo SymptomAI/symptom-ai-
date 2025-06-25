@@ -236,7 +236,7 @@ export default function HomePage() {
   return (
     <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-72 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -378,9 +378,9 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-8 py-6">
             {/* Welcome Message */}
             <div className="mb-8">
-              <div className="px-8">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-black">Hello Matthew</h1>
-                <p className="text-xl text-gray-600">How are you feeling today?</p>
+              <div className="px-8 text-center">
+                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-[#C1121F]">Hello Matthew 👋</h1>
+                <p className="text-xl text-black">How are you feeling today?</p>
               </div>
             </div>
 
