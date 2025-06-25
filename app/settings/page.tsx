@@ -18,12 +18,6 @@ import {
   Download,
   Trash2,
   Eye,
-  Users,
-  TrendingUp,
-  CheckCircle,
-  Key,
-  XCircle,
-  AlertCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -89,9 +83,6 @@ export default function SettingsPage() {
   })
 
   const [isSaving, setIsSaving] = useState(false)
-  const [apiKey, setApiKey] = useState("")
-  const [apiKeyStatus, setApiKeyStatus] = useState<"idle" | "testing" | "valid" | "invalid">("idle")
-  const [apiKeyMessage, setApiKeyMessage] = useState("")
 
   useEffect(() => {
     // Load recent chats from localStorage
@@ -137,16 +128,6 @@ export default function SettingsPage() {
     return () => {
       window.removeEventListener("storage", handleStorageChange)
       window.removeEventListener("searchHistoryUpdated", handleCustomUpdate)
-    }
-  }, [])
-
-  useEffect(() => {
-    // Load saved API key
-    const savedApiKey = localStorage.getItem("openai_api_key")
-    if (savedApiKey) {
-      setApiKey(savedApiKey)
-      setApiKeyStatus("valid")
-      setApiKeyMessage("API key loaded from storage")
     }
   }, [])
 
@@ -221,172 +202,107 @@ export default function SettingsPage() {
     }
   }
 
-  const testApiKey = async () => {
-    if (!apiKey.trim()) {
-      setApiKeyStatus("invalid")
-      setApiKeyMessage("Please enter an API key")
-      return
-    }
-
-    setApiKeyStatus("testing")
-    setApiKeyMessage("Testing API key...")
-
-    try {
-      const response = await fetch("/api/test-api-key", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ apiKey: apiKey.trim() }),
-      })
-
-      const result = await response.json()
-
-      if (result.valid) {
-        setApiKeyStatus("valid")
-        setApiKeyMessage("API key is valid and working!")
-        // Save the API key to localStorage for the session
-        localStorage.setItem("openai_api_key", apiKey.trim())
-      } else {
-        setApiKeyStatus("invalid")
-        setApiKeyMessage(result.error || "Invalid API key")
-      }
-    } catch (error) {
-      setApiKeyStatus("invalid")
-      setApiKeyMessage("Failed to test API key. Please try again.")
-    }
-  }
-
-  const saveApiKey = () => {
-    if (apiKeyStatus === "valid") {
-      localStorage.setItem("openai_api_key", apiKey.trim())
-      alert("API key saved successfully!")
-    } else {
-      alert("Please test and validate the API key first.")
-    }
-  }
-
-  const clearApiKey = () => {
-    setApiKey("")
-    setApiKeyStatus("idle")
-    setApiKeyMessage("")
-    localStorage.removeItem("openai_api_key")
-    alert("API key cleared successfully!")
-  }
-
   return (
     <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8" />
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">SYMPTOM AI</h1>
-                <p className="text-xs text-gray-500">AI-Powered Medical Analysis</p>
-              </div>
-            </div>
+      <div className="w-60 bg-[#F6F6F6] flex flex-col">
+        {/* Logo and Brand */}
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-E6juYgML470rZv0LnTNQrxbuxeO0Rz.png"
+              alt="Symptom AI"
+              className="w-8 h-8"
+            />
+            <span className="text-xl font-semibold text-gray-900 tracking-tight" style={{ letterSpacing: "-0.05em" }}>
+              SYMPTOM AI
+            </span>
           </div>
 
-          {/* Search */}
+          {/* Search Chat */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search chat"
-              className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
+              className="pl-10 bg-[#F6F6F6] border border-[#8E8E8E] rounded-xl text-sm h-8"
             />
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Medical Professionals</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">15,000+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Analyses Completed</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">2.3M+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Accuracy Rate</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">96.8%</span>
-            </div>
-          </div>
-        </div>
-
         {/* Navigation */}
-        <div className="p-4 flex-1">
-          <nav className="space-y-1 mb-6">
+        <div className="flex-1 p-4">
+          <nav className="space-y-1 mb-8">
             <div
               onClick={() => router.push("/")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <House className="w-4 h-4" />
-              <span>New Analysis</span>
+              <House className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Home
+              </span>
             </div>
             <div
               onClick={() => router.push("/library")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Medical Library</span>
+              <BookOpen className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Library
+              </span>
             </div>
             <div
               onClick={() => router.push("/history")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <Clock className="w-4 h-4" />
-              <span>Case History</span>
+              <Clock className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                History
+              </span>
             </div>
           </nav>
 
-          {/* Recent Conversations */}
-          <div className="mb-6">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Conversations</h3>
+          {/* Recent Chats */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.05em" }}>
+              Recent Chats
+            </h3>
             <div className="space-y-1">
               {recentChats.length > 0 ? (
                 recentChats.map((chat, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer group touch-manipulation"
+                    className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
                     onClick={() => handleRecentChatClick(chat)}
                   >
-                    <MessageCircle className="w-3 h-3 flex-shrink-0" />
-                    <span className="text-xs truncate flex-1">{chat}</span>
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-sm truncate font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                      {chat}
+                    </span>
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-4 text-center text-gray-400 text-xs">No recent conversations</div>
+                <div className="px-3 py-2 text-gray-400 text-sm">No recent searches</div>
               )}
             </div>
           </div>
+        </div>
 
-          {/* Bottom Navigation */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
-              <Settings className="w-4 h-4" />
-              <span>Settings</span>
-            </div>
-            <div
-              onClick={() => router.push("/help")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
-            >
-              <HelpCircle className="w-4 h-4" />
-              <span>Help & Support</span>
-            </div>
+        {/* Bottom Navigation */}
+        <div className="p-4 space-y-1">
+          <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg cursor-pointer">
+            <Settings className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Settings
+            </span>
+          </div>
+          <div
+            onClick={() => router.push("/help")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Help
+            </span>
           </div>
         </div>
       </div>
@@ -647,114 +563,11 @@ export default function SettingsPage() {
                     </Button>
                     <Button
                       onClick={handleDeleteData}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white flex items-center gap-2"
+                      className="bg-[#C21E26] hover:bg-[#9F191F] text-white flex items-center gap-2"
                     >
                       <Trash2 className="w-4 h-4" />
                       Delete All Data
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* API Configuration */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Key className="w-5 h-5" />
-                    OpenAI API Configuration
-                  </CardTitle>
-                  <CardDescription>Configure and test your OpenAI API key for AI-powered analysis</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="api-key">OpenAI API Key</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="api-key"
-                        type="password"
-                        placeholder="sk-proj-..."
-                        value={apiKey}
-                        onChange={(e) => {
-                          setApiKey(e.target.value)
-                          setApiKeyStatus("idle")
-                          setApiKeyMessage("")
-                        }}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={testApiKey}
-                        disabled={apiKeyStatus === "testing"}
-                        variant="outline"
-                        className="min-w-[100px]"
-                      >
-                        {apiKeyStatus === "testing" ? (
-                          <>
-                            <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
-                            Testing...
-                          </>
-                        ) : (
-                          "Test Key"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* API Key Status */}
-                  {apiKeyMessage && (
-                    <div
-                      className={`flex items-center gap-2 p-3 rounded-lg ${
-                        apiKeyStatus === "valid"
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : apiKeyStatus === "invalid"
-                            ? "bg-red-50 text-red-700 border border-red-200"
-                            : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}
-                    >
-                      {apiKeyStatus === "valid" && <CheckCircle className="w-4 h-4" />}
-                      {apiKeyStatus === "invalid" && <XCircle className="w-4 h-4" />}
-                      {apiKeyStatus === "testing" && <AlertCircle className="w-4 h-4" />}
-                      <span className="text-sm">{apiKeyMessage}</span>
-                    </div>
-                  )}
-
-                  {/* API Key Actions */}
-                  <div className="flex flex-wrap gap-3">
-                    <Button
-                      onClick={saveApiKey}
-                      disabled={apiKeyStatus !== "valid"}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white"
-                    >
-                      Save API Key
-                    </Button>
-                    <Button onClick={clearApiKey} variant="outline" className="text-gray-600 hover:text-gray-800">
-                      Clear API Key
-                    </Button>
-                  </div>
-
-                  {/* API Key Info */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">How to get your OpenAI API Key:</h4>
-                    <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                      <li>
-                        Visit{" "}
-                        <a
-                          href="https://platform.openai.com/api-keys"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#C1121F] hover:underline"
-                        >
-                          OpenAI API Keys page
-                        </a>
-                      </li>
-                      <li>Sign in to your OpenAI account</li>
-                      <li>Click "Create new secret key"</li>
-                      <li>Copy the key and paste it above</li>
-                      <li>Test the key to ensure it's working</li>
-                    </ol>
-                    <p className="text-xs text-gray-500 mt-3">
-                      <strong>Security Note:</strong> Your API key is stored locally in your browser and never sent to
-                      our servers except for validation.
-                    </p>
                   </div>
                 </CardContent>
               </Card>

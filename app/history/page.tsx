@@ -12,9 +12,6 @@ import {
   ArrowLeft,
   Calendar,
   Trash2,
-  Users,
-  TrendingUp,
-  CheckCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -137,116 +134,104 @@ export default function HistoryPage() {
   return (
     <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8" />
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">SYMPTOM AI</h1>
-                <p className="text-xs text-gray-500">AI-Powered Medical Analysis</p>
-              </div>
-            </div>
+      <div className="w-60 bg-[#F6F6F6] flex flex-col">
+        {/* Logo and Brand */}
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-E6juYgML470rZv0LnTNQrxbuxeO0Rz.png"
+              alt="Symptom AI"
+              className="w-8 h-8"
+            />
+            <span className="text-xl font-semibold text-gray-900 tracking-tight" style={{ letterSpacing: "-0.05em" }}>
+              SYMPTOM AI
+            </span>
           </div>
 
-          {/* Search */}
+          {/* Search Chat */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search chat"
-              className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
+              className="pl-10 bg-[#F6F6F6] border border-[#8E8E8E] rounded-xl text-sm h-8"
             />
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Medical Professionals</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">15,000+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Analyses Completed</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">2.3M+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Accuracy Rate</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">96.8%</span>
-            </div>
-          </div>
-        </div>
-
         {/* Navigation */}
-        <div className="p-4 flex-1">
-          <nav className="space-y-1 mb-6">
+        <div className="flex-1 p-4">
+          <nav className="space-y-1 mb-8">
             <div
               onClick={() => router.push("/")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <House className="w-4 h-4" />
-              <span>New Analysis</span>
+              <House className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Home
+              </span>
             </div>
             <div
               onClick={() => router.push("/library")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Medical Library</span>
+              <BookOpen className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Library
+              </span>
             </div>
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
-              <Clock className="w-4 h-4" />
-              <span>Case History</span>
+            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg cursor-pointer">
+              <Clock className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                History
+              </span>
             </div>
           </nav>
 
-          {/* Recent Conversations */}
-          <div className="mb-6">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Conversations</h3>
+          {/* Recent Chats */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.05em" }}>
+              Recent Chats
+            </h3>
             <div className="space-y-1">
               {recentChats.length > 0 ? (
                 recentChats.map((chat, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer group touch-manipulation"
+                    className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
                     onClick={() => handleRecentChatClick(chat)}
                   >
-                    <MessageCircle className="w-3 h-3 flex-shrink-0" />
-                    <span className="text-xs truncate flex-1">{chat}</span>
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-sm truncate font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                      {chat}
+                    </span>
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-4 text-center text-gray-400 text-xs">No recent conversations</div>
+                <div className="px-3 py-2 text-gray-400 text-sm">No recent searches</div>
               )}
             </div>
           </div>
+        </div>
 
-          {/* Bottom Navigation */}
-          <div className="space-y-1">
-            <div
-              onClick={() => router.push("/settings")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Settings</span>
-            </div>
-            <div
-              onClick={() => router.push("/help")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
-            >
-              <HelpCircle className="w-4 h-4" />
-              <span>Help & Support</span>
-            </div>
+        {/* Bottom Navigation */}
+        <div className="p-4 space-y-1">
+          <div
+            onClick={() => router.push("/settings")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Settings
+            </span>
+          </div>
+          <div
+            onClick={() => router.push("/help")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Help
+            </span>
           </div>
         </div>
       </div>
@@ -269,10 +254,7 @@ export default function HistoryPage() {
             </div>
 
             {/* User Profile */}
-            <div
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
-              onClick={() => router.push("/profile")}
-            >
+            <div className="flex items-center gap-3">
               <div className="text-right">
                 <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
                 <div className="text-xs text-gray-500">Manderson@gmail.com</div>

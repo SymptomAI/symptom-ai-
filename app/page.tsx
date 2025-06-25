@@ -10,24 +10,39 @@ import {
   Settings,
   HelpCircle,
   MessageCircle,
-  Send,
-  Mic,
-  MapPin,
-  Users,
-  TrendingUp,
-  CheckCircle,
-  Stethoscope,
+  Share2,
+  Download,
+  Plus,
+  ThumbsUp,
+  ThumbsDown,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
-export default function HomePage() {
-  const router = useRouter()
+export default function SymptomAI() {
   const [symptoms, setSymptoms] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [error, setError] = useState("")
   const [recentChats, setRecentChats] = useState<string[]>([])
+  const router = useRouter()
+
+  const commonSymptoms = [
+    "Headache",
+    "Cough",
+    "Sore Throat",
+    "Fever",
+    "Stomach Pain",
+    "Fatigue",
+    "Chest Pain",
+    "Dizziness",
+    "Shortness of Breath",
+    "Back Pain",
+    "Rash",
+    "Muscle Pains",
+    "Anxiety",
+  ]
 
   useEffect(() => {
     // Load recent chats from localStorage
@@ -46,16 +61,9 @@ export default function HomePage() {
       }
     }
 
-    // Check if there are pre-filled symptoms from navigation
-    const prefilledSymptoms = sessionStorage.getItem("userSymptoms")
-    if (prefilledSymptoms) {
-      setSymptoms(prefilledSymptoms)
-      sessionStorage.removeItem("userSymptoms")
-    }
-
     loadRecentChats()
 
-    // Listen for storage changes
+    // Listen for storage changes to update recent chats when searches are made on other pages
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "searchHistory") {
         loadRecentChats()
@@ -64,6 +72,7 @@ export default function HomePage() {
 
     window.addEventListener("storage", handleStorageChange)
 
+    // Also listen for custom events for same-tab updates
     const handleCustomUpdate = () => {
       loadRecentChats()
     }
@@ -76,7 +85,15 @@ export default function HomePage() {
     }
   }, [])
 
+  const handleSymptomClick = (symptom: string) => {
+    if (symptoms.includes(symptom)) return
+
+    const newSymptoms = symptoms ? `${symptoms}, ${symptom}` : symptom
+    setSymptoms(newSymptoms)
+  }
+
   const handleRecentChatClick = (chat: string) => {
+    // Find the analysis data for this chat from detailed history
     const detailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
     let foundAnalysis = null
 
@@ -93,249 +110,214 @@ export default function HomePage() {
       sessionStorage.setItem("userSymptoms", chat)
       router.push("/results")
     } else {
+      // If no analysis found, set symptoms and search
       setSymptoms(chat)
     }
   }
 
   const handleAnalyze = async () => {
     if (!symptoms.trim()) {
-      alert("Please describe your symptoms first.")
+      setError("Please enter your symptoms before analysis.")
       return
     }
 
     setIsAnalyzing(true)
+    setError("")
 
     try {
+      const response = await fetch("/api/analyze-symptoms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ symptoms: symptoms.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to analyze symptoms")
+      }
+
+      if (!data.analysis) {
+        throw new Error("No analysis data received")
+      }
+
+      // Store the analysis data in sessionStorage to pass to results page
+      sessionStorage.setItem("symptomAnalysis", JSON.stringify(data.analysis))
+      sessionStorage.setItem("userSymptoms", symptoms.trim())
+
       // Save to search history
-      const currentHistory = JSON.parse(localStorage.getItem("searchHistory") || "[]")
-      const updatedHistory = [symptoms.trim(), ...currentHistory.filter((item) => item !== symptoms.trim())].slice(
+      const existingHistory = JSON.parse(localStorage.getItem("searchHistory") || "[]")
+      const updatedHistory = [symptoms.trim(), ...existingHistory.filter((item) => item !== symptoms.trim())].slice(
         0,
         10,
       )
       localStorage.setItem("searchHistory", JSON.stringify(updatedHistory))
 
-      // Create analysis data (mock for demo)
-      const analysisData = {
-        conditions: [
-          {
-            name: "Common Cold",
-            probability: "75%",
-            description:
-              "A viral infection affecting the upper respiratory tract, commonly causing congestion, runny nose, and mild fatigue.",
-            severity: "low" as const,
-          },
-          {
-            name: "Seasonal Allergies",
-            probability: "45%",
-            description: "Allergic reaction to environmental allergens like pollen, dust, or pet dander.",
-            severity: "low" as const,
-          },
-          {
-            name: "Viral Upper Respiratory Infection",
-            probability: "35%",
-            description: "A broader category of viral infections affecting the nose, throat, and upper airways.",
-            severity: "medium" as const,
-          },
-        ],
-        prescriptions: [],
-        otc_medications: ["Decongestants", "Pain relievers (Acetaminophen or Ibuprofen)", "Antihistamines"],
-        home_remedies: [
-          "Rest and adequate sleep",
-          "Stay hydrated with water and warm fluids",
-          "Warm tea with honey",
-          "Steam inhalation",
-        ],
-        questions: [
-          "How long have you been experiencing these symptoms?",
-          "Do you have a fever or elevated body temperature?",
-          "Have you been around anyone who was sick recently?",
-          "Are you taking any current medications?",
-        ],
-        timeline: "Expected recovery within 7-10 days with proper rest",
-        cost: "Estimated cost of OTC medications: $15-30",
+      // Save detailed search history with analysis data
+      const saveDetailedHistory = () => {
+        const now = new Date()
+        const timeString = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        const dateString =
+          now.toDateString() === new Date().toDateString()
+            ? "Today"
+            : now.toDateString() === new Date(Date.now() - 86400000).toDateString()
+              ? "Yesterday"
+              : now.toLocaleDateString()
+
+        const newSearchItem = {
+          symptoms: symptoms.trim(),
+          time: timeString,
+          conditions: data.analysis.possibleConditions?.slice(0, 2).map((c) => c.condition) || [],
+          analysisData: data.analysis,
+        }
+
+        const existingDetailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
+
+        // Find if date group exists
+        const dateGroupIndex = existingDetailedHistory.findIndex((group) => group.date === dateString)
+
+        if (dateGroupIndex >= 0) {
+          // Add to existing date group
+          existingDetailedHistory[dateGroupIndex].searches.unshift(newSearchItem)
+          // Keep only last 10 searches per day
+          existingDetailedHistory[dateGroupIndex].searches = existingDetailedHistory[dateGroupIndex].searches.slice(
+            0,
+            10,
+          )
+        } else {
+          // Create new date group
+          existingDetailedHistory.unshift({
+            date: dateString,
+            searches: [newSearchItem],
+          })
+        }
+
+        // Keep only last 7 days
+        const updatedHistory = existingDetailedHistory.slice(0, 7)
+        localStorage.setItem("detailedSearchHistory", JSON.stringify(updatedHistory))
       }
 
-      // Save detailed history
-      const today = new Date().toLocaleDateString()
-      const currentTime = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-      const detailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
+      saveDetailedHistory()
 
-      let todayGroup = detailedHistory.find((group) => group.date === today)
-      if (!todayGroup) {
-        todayGroup = { date: today, searches: [] }
-        detailedHistory.unshift(todayGroup)
-      }
+      // Update recent chats immediately
+      setRecentChats([symptoms.trim(), ...recentChats.filter((item) => item !== symptoms.trim())].slice(0, 3))
 
-      todayGroup.searches.unshift({
-        symptoms: symptoms.trim(),
-        time: currentTime,
-        conditions: analysisData.conditions.map((c) => c.name),
-        analysisData: analysisData,
-      })
+      // Dispatch custom event to notify other tabs/components
+      window.dispatchEvent(new CustomEvent("searchHistoryUpdated"))
 
-      localStorage.setItem("detailedSearchHistory", JSON.stringify(detailedHistory.slice(0, 30)))
-
-      // Store analysis data for results page
-      sessionStorage.setItem("symptomAnalysis", JSON.stringify(analysisData))
-      sessionStorage.setItem("userSymptoms", symptoms.trim())
-
-      // Dispatch custom event for real-time updates
-      window.dispatchEvent(new Event("searchHistoryUpdated"))
-
-      // Navigate to results
+      // Navigate to results page
       router.push("/results")
     } catch (error) {
-      console.error("Analysis error:", error)
-      alert("Sorry, there was an error analyzing your symptoms. Please try again.")
+      console.error("Error:", error)
+      setError(error instanceof Error ? error.message : "There was an error analyzing your symptoms. Please try again.")
     } finally {
       setIsAnalyzing(false)
     }
   }
 
-  const handleVoiceInput = () => {
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
-      const recognition = new SpeechRecognition()
-
-      recognition.continuous = false
-      recognition.interimResults = false
-      recognition.lang = "en-US"
-
-      recognition.onstart = () => {
-        console.log("Voice recognition started")
-      }
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript
-        setSymptoms((prev) => prev + " " + transcript)
-      }
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error:", event.error)
-        alert("Voice recognition failed. Please try again or type your symptoms.")
-      }
-
-      recognition.start()
-    } else {
-      alert("Voice recognition is not supported in your browser.")
-    }
-  }
-
-  const commonSymptoms = ["Headache", "Chest Pain", "Shortness of Breath", "Abdominal Pain", "Fever", "Fatigue"]
-
   return (
-    <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
+    <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8" />
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">SYMPTOM AI</h1>
-                <p className="text-xs text-gray-500">AI-Powered Medical Analysis</p>
-              </div>
-            </div>
+      <div className="w-60 bg-[#F6F6F6] flex flex-col">
+        {/* Logo and Brand */}
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-E6juYgML470rZv0LnTNQrxbuxeO0Rz.png"
+              alt="Symptom AI"
+              className="w-8 h-8"
+            />
+            <span className="text-xl font-semibold text-gray-900 tracking-tight" style={{ letterSpacing: "-0.05em" }}>
+              SYMPTOM AI
+            </span>
           </div>
 
-          {/* Search */}
+          {/* Search Chat */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Search chat"
-              className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
+              className="pl-10 bg-[#F6F6F6] border border-[#8E8E8E] rounded-lg text-sm h-8"
             />
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="p-4 border-b border-gray-100">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Medical Professionals</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">15,000+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Analyses Completed</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">2.3M+</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Accuracy Rate</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">96.8%</span>
-            </div>
-          </div>
-        </div>
-
         {/* Navigation */}
-        <div className="p-4 flex-1">
-          <nav className="space-y-1 mb-6">
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
-              <House className="w-4 h-4" />
-              <span>New Analysis</span>
+        <div className="flex-1 p-4">
+          <nav className="space-y-1 mb-8">
+            <div className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
+              <House className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Home
+              </span>
             </div>
             <div
               onClick={() => router.push("/library")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>Medical Library</span>
+              <BookOpen className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Library
+              </span>
             </div>
             <div
               onClick={() => router.push("/history")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
             >
-              <Clock className="w-4 h-4" />
-              <span>Case History</span>
+              <Clock className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                History
+              </span>
             </div>
           </nav>
 
-          {/* Recent Conversations */}
-          <div className="mb-6">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Conversations</h3>
+          {/* Recent Chats */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.05em" }}>
+              Recent Chats
+            </h3>
             <div className="space-y-1">
               {recentChats.length > 0 ? (
                 recentChats.map((chat, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer group touch-manipulation"
+                    className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
                     onClick={() => handleRecentChatClick(chat)}
                   >
-                    <MessageCircle className="w-3 h-3 flex-shrink-0" />
-                    <span className="text-xs truncate flex-1">{chat}</span>
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-sm truncate font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                      {chat}
+                    </span>
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-4 text-center text-gray-400 text-xs">No recent conversations</div>
+                <div className="px-3 py-2 text-gray-400 text-sm">No recent searches</div>
               )}
             </div>
           </div>
+        </div>
 
-          {/* Bottom Navigation */}
-          <div className="space-y-1">
-            <div
-              onClick={() => router.push("/settings")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Settings</span>
-            </div>
-            <div
-              onClick={() => router.push("/help")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
-            >
-              <HelpCircle className="w-4 h-4" />
-              <span>Help & Support</span>
-            </div>
+        {/* Bottom Navigation */}
+        <div className="p-4 space-y-1">
+          <div
+            onClick={() => router.push("/settings")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Settings
+            </span>
+          </div>
+          <div
+            onClick={() => router.push("/help")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Help
+            </span>
           </div>
         </div>
       </div>
@@ -344,12 +326,7 @@ export default function HomePage() {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <img src="/symptom-ai-header-logo.png" alt="Symptom AI" className="h-8" />
-            </div>
-
-            {/* User Profile */}
+          <div className="flex justify-end items-center">
             <div
               className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
               onClick={() => router.push("/profile")}
@@ -365,94 +342,171 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-auto">
-          <div className="max-w-6xl mx-auto px-8 py-6">
-            {/* Welcome Message */}
-            <div className="mb-8">
-              <div className="bg-gradient-to-r from-[#C1121F] to-[#8B0000] rounded-2xl p-8 text-white">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome to Symptom AI</h1>
-                <p className="text-xl opacity-90 mb-2">
-                  Get instant AI-powered analysis of your symptoms and personalized health recommendations.
-                </p>
-                <p className="text-sm opacity-75">
-                  Describe your symptoms below and receive comprehensive medical insights powered by advanced AI
-                  technology.
-                </p>
+        {/* Main Chat Area */}
+        <div className="flex-1 flex flex-col items-center justify-center px-8 py-8">
+          <div className="max-w-4xl w-full">
+            {/* Greeting */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-semibold text-[#950E17] mb-1">
+                Hello Matthew <span className="text-yellow-400">👋</span>
+              </h1>
+              <h2 className="text-3xl font-medium text-[#000000]">How are you feeling today?</h2>
+            </div>
+
+            {/* Input Container */}
+            <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6 mb-10">
+              <div className="flex items-center gap-4 mb-8">
+                <Input
+                  placeholder="Enter your symptoms and context (e.g., a headache after taking eating my icecream...)"
+                  value={symptoms}
+                  onChange={(e) => setSymptoms(e.target.value)}
+                  className="flex-1 border-0 text-base placeholder:text-gray-400 focus-visible:ring-0 px-0 h-12 font-normal tracking-normal"
+                  disabled={isAnalyzing}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isAnalyzing) {
+                      handleAnalyze()
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleAnalyze}
+                  disabled={isAnalyzing}
+                  className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-3 rounded-full font-semibold text-base disabled:opacity-50"
+                  style={{ letterSpacing: "0%" }}
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Searching...
+                    </>
+                  ) : (
+                    "Search"
+                  )}
+                </Button>
               </div>
-            </div>
 
-            {/* Main Input Section */}
-            <div className="mb-8">
-              <Card className="border-2 border-[#DDDDDD] shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
-                    Describe Your Symptoms
-                  </CardTitle>
-                  <CardDescription>
-                    Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
-                    value={symptoms}
-                    onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[120px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
-                  />
-                  <div className="flex justify-between items-center">
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={handleVoiceInput}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2"
-                      >
-                        <Mic className="w-4 h-4" />
-                        Voice Input
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        Use Location
-                      </Button>
-                    </div>
-                    <Button
-                      onClick={handleAnalyze}
-                      disabled={isAnalyzing || !symptoms.trim()}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 font-semibold"
-                    >
-                      {isAnalyzing ? (
-                        <>
-                          <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Analyzing...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4 mr-2" />
-                          Analyze Symptoms
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+              {/* Error Message */}
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="text-sm text-red-800">{error}</div>
+                </div>
+              )}
 
-            {/* Quick Select Common Symptoms */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Select Common Symptoms:</h2>
-              <div className="flex flex-wrap gap-3">
+              {/* Symptom Tags */}
+              <div className="flex flex-wrap justify-center gap-3">
                 {commonSymptoms.map((symptom, index) => (
-                  <button
+                  <Badge
                     key={index}
-                    onClick={() => setSymptoms(symptom)}
-                    className="px-6 py-3 border-2 border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors font-medium"
+                    variant="secondary"
+                    onClick={() => !isAnalyzing && handleSymptomClick(symptom)}
+                    className={`px-4 py-2 text-sm font-semibold hover:bg-gray-200 cursor-pointer border-0 rounded-full transition-colors duration-200 tracking-normal ${
+                      symptoms.includes(symptom) ? "bg-[#C1121F] text-white hover:bg-[#9e0e19]" : "bg-gray-100"
+                    } ${isAnalyzing ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     {symptom}
-                  </button>
+                  </Badge>
                 ))}
               </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-6">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  // Check if Web Share API is supported and available
+                  if (
+                    navigator.share &&
+                    navigator.canShare &&
+                    navigator.canShare({
+                      title: "Symptom AI",
+                      text: "Check out this AI-powered symptom analysis tool",
+                      url: window.location.href,
+                    })
+                  ) {
+                    navigator
+                      .share({
+                        title: "Symptom AI",
+                        text: "Check out this AI-powered symptom analysis tool",
+                        url: window.location.href,
+                      })
+                      .catch((error) => {
+                        // If sharing fails, fall back to clipboard
+                        console.log("Share failed, falling back to clipboard:", error)
+                        navigator.clipboard
+                          .writeText(window.location.href)
+                          .then(() => {
+                            alert("Link copied to clipboard!")
+                          })
+                          .catch(() => {
+                            // Final fallback if clipboard also fails
+                            alert("Unable to share. Please copy the URL manually.")
+                          })
+                      })
+                  } else {
+                    // Fallback to clipboard if Web Share API is not supported
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                      navigator.clipboard
+                        .writeText(window.location.href)
+                        .then(() => {
+                          alert("Link copied to clipboard!")
+                        })
+                        .catch(() => {
+                          // Final fallback if clipboard also fails
+                          alert("Unable to copy link. Please copy the URL manually.")
+                        })
+                    } else {
+                      // Final fallback for older browsers
+                      alert("Sharing not supported. Please copy the URL manually: " + window.location.href)
+                    }
+                  }
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const content = `My Symptoms: ${symptoms}\n\nGenerated by Symptom AI`
+                  const blob = new Blob([content], { type: "text/plain" })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement("a")
+                  a.href = url
+                  a.download = "my-symptoms.txt"
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSymptoms("")}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => alert("Thank you for your positive feedback!")}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => alert("Thank you for your feedback. We will continue to improve!")}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <ThumbsDown className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </div>

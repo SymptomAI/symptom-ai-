@@ -3,379 +3,742 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
-  ArrowLeft,
-  MapPin,
-  Phone,
-  Calendar,
-  DollarSign,
-  Pill,
-  Home,
-  Heart,
-  ThumbsUp,
-  ThumbsDown,
+  Search,
+  HomeIcon as House,
+  BookOpen,
+  Clock,
+  Settings,
+  HelpCircle,
+  MessageCircle,
   Share2,
   Download,
-  AlertTriangle,
-  ExternalLink,
-  Clock,
-  HelpCircle,
+  Plus,
+  ThumbsUp,
+  ThumbsDown,
+  Map,
+  Pill,
+  FileText,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 interface AnalysisData {
-  conditions: Array<{
-    name: string
-    probability: string
-    description: string
-    severity: "low" | "medium" | "high"
+  possibleConditions: Array<{
+    condition: string
+    severity: string
+    percentage: string
+    symptoms?: string
   }>
-  prescriptions: string[]
-  otc_medications: string[]
-  home_remedies: string[]
-  questions: string[]
-  timeline: string
-  cost: string
+  nearbyMedicalHelp: Array<{
+    name: string
+    type: string
+    distance: string
+    wait: string
+  }>
+  prescriptions: Array<{
+    name: string
+    cost: string
+    duration: string
+  }>
+  otcMedications: Array<{
+    name: string
+    use: string
+    cost: string
+  }>
+  homeRemedies: string[]
+  expectedDuration: string
+  estimatedCost: string
+  additionalQuestions: string[]
 }
 
 export default function ResultsPage() {
-  const router = useRouter()
-  const [analysis, setAnalysis] = useState<AnalysisData | null>(null)
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null)
   const [userSymptoms, setUserSymptoms] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
+  const [searchValue, setSearchValue] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const [recentChats, setRecentChats] = useState<string[]>([])
+  const router = useRouter()
 
   useEffect(() => {
-    // Load analysis data from sessionStorage
-    const loadAnalysisData = () => {
-      const savedAnalysis = sessionStorage.getItem("symptomAnalysis")
-      const savedSymptoms = sessionStorage.getItem("userSymptoms")
-
-      if (savedAnalysis && savedSymptoms) {
+    // Load recent chats from localStorage
+    const loadRecentChats = () => {
+      const savedHistory = localStorage.getItem("searchHistory")
+      if (savedHistory) {
         try {
-          setAnalysis(JSON.parse(savedAnalysis))
-          setUserSymptoms(savedSymptoms)
+          const history = JSON.parse(savedHistory)
+          setRecentChats(history.slice(0, 3))
         } catch (error) {
-          console.error("Error parsing analysis data:", error)
-          router.push("/")
-          return
+          console.error("Error parsing search history:", error)
+          setRecentChats([])
         }
       } else {
-        router.push("/")
-        return
+        setRecentChats([])
       }
-      setIsLoading(false)
     }
 
-    loadAnalysisData()
+    // Get analysis data from sessionStorage
+    const storedAnalysis = sessionStorage.getItem("symptomAnalysis")
+    const storedSymptoms = sessionStorage.getItem("userSymptoms")
+
+    if (storedAnalysis) {
+      setAnalysisData(JSON.parse(storedAnalysis))
+    }
+
+    if (storedSymptoms) {
+      setUserSymptoms(storedSymptoms)
+      setSearchValue(storedSymptoms)
+    }
+
+    // If no data, redirect back to home
+    if (!storedAnalysis) {
+      router.push("/")
+    }
+
+    loadRecentChats()
+
+    // Listen for storage changes to update recent chats when searches are made on other pages
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "searchHistory") {
+        loadRecentChats()
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+
+    // Also listen for custom events for same-tab updates
+    const handleCustomUpdate = () => {
+      loadRecentChats()
+    }
+
+    window.addEventListener("searchHistoryUpdated", handleCustomUpdate)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+      window.removeEventListener("searchHistoryUpdated", handleCustomUpdate)
+    }
   }, [router])
 
-  const handleFeedback = (isPositive: boolean) => {
-    alert(isPositive ? "Thank you for your positive feedback!" : "Thank you for your feedback. We'll work to improve.")
-  }
+  const handleRecentChatClick = (chat: string) => {
+    // Find the analysis data for this chat from detailed history
+    const detailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
+    let foundAnalysis = null
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: "Symptom Analysis Results",
-        text: `Analysis for: ${userSymptoms}`,
-        url: window.location.href,
-      })
+    for (const dateGroup of detailedHistory) {
+      const foundSearch = dateGroup.searches.find((search) => search.symptoms === chat)
+      if (foundSearch && foundSearch.analysisData) {
+        foundAnalysis = foundSearch.analysisData
+        break
+      }
+    }
+
+    if (foundAnalysis) {
+      sessionStorage.setItem("symptomAnalysis", JSON.stringify(foundAnalysis))
+      sessionStorage.setItem("userSymptoms", chat)
+      router.push("/results")
     } else {
-      navigator.clipboard.writeText(window.location.href)
-      alert("Link copied to clipboard!")
+      // If no analysis found, set symptoms and search
+      setSearchValue(chat)
+      handleNewSearch()
     }
   }
 
-  const handleDownload = () => {
-    const content = `
-Symptom Analysis Report
-======================
+  const handleNewSearch = async () => {
+    if (!searchValue.trim()) return
 
-Symptoms: ${userSymptoms}
-Date: ${new Date().toLocaleDateString()}
+    setIsSearching(true)
 
-Possible Conditions:
-${analysis?.conditions.map((c) => `- ${c.name} (${c.probability}): ${c.description}`).join("\n") || ""}
+    try {
+      const response = await fetch("/api/analyze-symptoms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ symptoms: searchValue.trim() }),
+      })
 
-Recommended Medications:
-${analysis?.otc_medications.map((med) => `- ${med}`).join("\n") || ""}
+      const data = await response.json()
 
-Home Remedies:
-${analysis?.home_remedies.map((remedy) => `- ${remedy}`).join("\n") || ""}
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to analyze symptoms")
+      }
 
-Timeline: ${analysis?.timeline || ""}
-Estimated Cost: ${analysis?.cost || ""}
+      if (!data.analysis) {
+        throw new Error("No analysis data received")
+      }
 
-DISCLAIMER: This analysis is for informational purposes only and should not replace professional medical advice.
-    `
+      // Update the analysis data with new results
+      setAnalysisData(data.analysis)
+      setUserSymptoms(searchValue.trim())
 
-    const blob = new Blob([content], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "symptom-analysis.txt"
-    a.click()
-    URL.revokeObjectURL(url)
+      // Store the new analysis data
+      sessionStorage.setItem("symptomAnalysis", JSON.stringify(data.analysis))
+      sessionStorage.setItem("userSymptoms", searchValue.trim())
+
+      // Save detailed search history with analysis data
+      const saveDetailedHistory = () => {
+        const now = new Date()
+        const timeString = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        const dateString =
+          now.toDateString() === new Date().toDateString()
+            ? "Today"
+            : now.toDateString() === new Date(Date.now() - 86400000).toDateString()
+              ? "Yesterday"
+              : now.toLocaleDateString()
+
+        const newSearchItem = {
+          symptoms: searchValue.trim(),
+          time: timeString,
+          conditions: data.analysis.possibleConditions?.slice(0, 2).map((c) => c.condition) || [],
+          analysisData: data.analysis,
+        }
+
+        const existingDetailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
+
+        // Find if date group exists
+        const dateGroupIndex = existingDetailedHistory.findIndex((group) => group.date === dateString)
+
+        if (dateGroupIndex >= 0) {
+          // Add to existing date group
+          existingDetailedHistory[dateGroupIndex].searches.unshift(newSearchItem)
+          // Keep only last 10 searches per day
+          existingDetailedHistory[dateGroupIndex].searches = existingDetailedHistory[dateGroupIndex].searches.slice(
+            0,
+            10,
+          )
+        } else {
+          // Create new date group
+          existingDetailedHistory.unshift({
+            date: dateString,
+            searches: [newSearchItem],
+          })
+        }
+
+        // Keep only last 7 days
+        const updatedHistory = existingDetailedHistory.slice(0, 7)
+        localStorage.setItem("detailedSearchHistory", JSON.stringify(updatedHistory))
+      }
+
+      saveDetailedHistory()
+
+      // Save to search history
+      const existingHistory = JSON.parse(localStorage.getItem("searchHistory") || "[]")
+      const updatedHistory = [
+        searchValue.trim(),
+        ...existingHistory.filter((item) => item !== searchValue.trim()),
+      ].slice(0, 10)
+      localStorage.setItem("searchHistory", JSON.stringify(updatedHistory))
+
+      // Update recent chats
+      setRecentChats([searchValue.trim(), ...recentChats.filter((item) => item !== searchValue.trim())].slice(0, 3))
+
+      // Dispatch custom event to notify other tabs/components
+      window.dispatchEvent(new CustomEvent("searchHistoryUpdated"))
+    } catch (error) {
+      console.error("Error:", error)
+      alert("There was an error analyzing your symptoms. Please try again.")
+    } finally {
+      setIsSearching(false)
+    }
   }
 
-  if (isLoading) {
+  const handleMapClick = () => {
+    // Get user location from profile
+    const userProfile = localStorage.getItem("userProfile")
+    let location = "medical facilities near me"
+
+    if (userProfile) {
+      const profile = JSON.parse(userProfile)
+      if (profile.city && profile.state) {
+        location = `medical facilities near ${profile.city}, ${profile.state}`
+      } else if (profile.zipCode) {
+        location = `medical facilities near ${profile.zipCode}`
+      }
+    }
+
+    const googleMapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(location)}`
+    window.open(googleMapsUrl, "_blank")
+  }
+
+  if (!analysisData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex h-screen bg-[#FCFCFC] items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#C1121F] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading analysis...</p>
+          <div className="text-lg font-semibold text-gray-900 mb-2">Loading analysis...</div>
+          <div className="text-sm text-gray-500">Please wait while we process your symptoms.</div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Button variant="ghost" onClick={() => router.push("/")} className="mr-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8 mr-3" />
-              <h1 className="text-xl font-bold text-gray-900">SYMPTOM AI</h1>
+    <div className="flex h-screen bg-[#FCFCFC]">
+      {/* Left Sidebar */}
+      <div className="w-60 bg-[#F6F6F6] flex flex-col">
+        {/* Logo and Brand */}
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-E6juYgML470rZv0LnTNQrxbuxeO0Rz.png"
+              alt="Symptom AI"
+              className="w-8 h-8"
+            />
+            <span className="text-xl font-semibold text-gray-900 tracking-tight" style={{ letterSpacing: "-0.05em" }}>
+              SYMPTOM AI
+            </span>
+          </div>
+
+          {/* Search Chat */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search chat"
+              className="pl-10 bg-[#F6F6F6] border border-[#8E8E8E] rounded-xl text-sm h-8"
+            />
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex-1 p-4">
+          <nav className="space-y-1 mb-8">
+            <div
+              onClick={() => router.push("/")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+            >
+              <House className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Home
+              </span>
             </div>
-            <div className="flex items-center gap-4">
-              <Button onClick={handleShare} variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-              <Button onClick={handleDownload} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download
-              </Button>
-              <div
-                className="w-8 h-8 bg-[#C1121F] rounded-full flex items-center justify-center cursor-pointer"
-                onClick={() => router.push("/profile")}
-              >
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
+            <div
+              onClick={() => router.push("/library")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                Library
+              </span>
+            </div>
+            <div
+              onClick={() => router.push("/history")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+            >
+              <Clock className="w-5 h-5" />
+              <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                History
+              </span>
+            </div>
+          </nav>
+
+          {/* Recent Chats */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-3" style={{ letterSpacing: "-0.05em" }}>
+              Recent Chats
+            </h3>
+            <div className="space-y-1">
+              {recentChats.length > 0 ? (
+                recentChats.map((chat, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
+                    onClick={() => handleRecentChatClick(chat)}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span className="text-sm truncate font-semibold" style={{ letterSpacing: "-0.05em" }}>
+                      {chat}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-3 py-2 text-gray-400 text-sm">No recent searches</div>
+              )}
             </div>
           </div>
         </div>
-      </header>
+
+        {/* Bottom Navigation */}
+        <div className="p-4 space-y-1">
+          <div
+            onClick={() => router.push("/settings")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <Settings className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Settings
+            </span>
+          </div>
+          <div
+            onClick={() => router.push("/help")}
+            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer"
+          >
+            <HelpCircle className="w-5 h-5" />
+            <span className="font-semibold" style={{ letterSpacing: "-0.05em" }}>
+              Help
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Analysis Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800">
-              <strong>Your symptoms:</strong> "{userSymptoms}"
-            </p>
+      <div className="flex-1 flex flex-col">
+        {/* Header with Search */}
+        <div className="px-8 py-4">
+          <div className="flex justify-between items-center">
+            {/* Search Bar with User's Symptoms */}
+            <div className="flex-1 max-w-2xl">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Enter your symptoms..."
+                  className="pl-10 pr-20 bg-white border border-[#DDDDDD] rounded-xl text-sm h-10 w-full"
+                  disabled={isSearching}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isSearching) {
+                      handleNewSearch()
+                    }
+                  }}
+                />
+                <Button
+                  onClick={handleNewSearch}
+                  disabled={isSearching}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-[#C1121F] hover:bg-[#9e0e19] text-white px-2 py-1 rounded-lg text-xs h-8 disabled:opacity-50"
+                >
+                  {isSearching ? (
+                    <>
+                      <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                      Searching...
+                    </>
+                  ) : (
+                    "Search"
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* User Profile - Clickable */}
+            <div
+              className="flex items-center gap-3 ml-6 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
+              onClick={() => router.push("/profile")}
+            >
+              <div className="text-right">
+                <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
+                <div className="text-xs text-gray-500">Manderson@gmail.com</div>
+              </div>
+              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-xl">M</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Feedback Buttons */}
-        <div className="flex gap-3 mb-8">
-          <Button onClick={() => handleFeedback(true)} variant="outline" className="flex items-center gap-2">
-            <ThumbsUp className="w-4 h-4" />
-            Helpful
-          </Button>
-          <Button onClick={() => handleFeedback(false)} variant="outline" className="flex items-center gap-2">
-            <ThumbsDown className="w-4 h-4" />
-            Not Helpful
-          </Button>
-        </div>
+        {/* Results Content */}
+        <div className="flex-1 overflow-auto px-8 py-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Loading Overlay */}
+            {isSearching && (
+              <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="w-6 h-6 animate-spin text-[#C1121F]" />
+                    <span className="text-lg font-semibold">Analyzing your symptoms...</span>
+                  </div>
+                </div>
+              </div>
+            )}
 
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Possible Conditions */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-[#C1121F]" />
-                  Possible Conditions
-                </CardTitle>
-                <CardDescription>Based on the symptoms you described</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {analysis?.conditions.map((condition, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900">{condition.name}</h3>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            condition.severity === "high"
-                              ? "destructive"
-                              : condition.severity === "medium"
-                                ? "default"
-                                : "secondary"
-                          }
-                        >
-                          {condition.severity}
-                        </Badge>
-                        <span className="text-sm font-medium text-[#C1121F]">{condition.probability}</span>
+            {/* Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Possible Conditions - Full Width */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6 lg:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <FileText className="w-3 h-3 text-white" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Possible Conditions</h2>
+                </div>
+                <div className="space-y-4">
+                  {analysisData.possibleConditions.map((condition, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-gray-900 text-sm">{condition.condition}</div>
+                        <div className="text-sm text-gray-500">Severity: {condition.severity}</div>
+                        {condition.symptoms && <div className="text-xs text-gray-400 mt-1">{condition.symptoms}</div>}
+                      </div>
+                      <div className="bg-[#F4F3F4] rounded-full px-4 py-0.5">
+                        <div className="text-base font-semibold text-gray-900">{condition.percentage}</div>
                       </div>
                     </div>
-                    <p className="text-gray-600 text-sm">{condition.description}</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+                  ))}
+                </div>
+              </div>
 
-          {/* Quick Actions */}
-          <div className="space-y-6">
-            {/* Timeline & Cost */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-[#C1121F]" />
-                  Timeline & Cost
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm font-medium">Recovery Time</p>
-                    <p className="text-xs text-gray-600">{analysis?.timeline}</p>
+              {/* Nearby Medical Help */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <FileText className="w-3 h-3 text-white" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Nearby Medical Help</h2>
+                </div>
+                <div className="space-y-4">
+                  {analysisData.nearbyMedicalHelp.map((facility, index) => (
+                    <div key={index} className="border-b border-gray-100 pb-3 last:border-b-0">
+                      <div className="font-semibold text-gray-900 text-sm">{facility.name}</div>
+                      <div className="text-sm text-gray-500 flex items-center justify-between">
+                        <span>
+                          {facility.type} • {facility.distance}
+                        </span>
+                        <div className="bg-[#F4F3F4] rounded-full px-3 py-1">
+                          <span className="text-xs font-bold text-gray-700">Wait: {facility.wait}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Locations */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <Map className="w-3 h-3 text-white" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Locations</h2>
+                </div>
+                <div
+                  className="bg-green-50 rounded-lg h-48 flex items-center justify-center relative cursor-pointer hover:bg-green-100 transition-colors"
+                  onClick={handleMapClick}
+                >
+                  <div className="text-gray-500 text-sm">Click to view on Google Maps</div>
+
+                  {/* Location Pins using the provided image */}
+                  <div className="absolute top-6 right-8">
+                    <img src="/location-pin.png" alt="Medical facility" className="w-6 h-8" />
+                  </div>
+
+                  <div className="absolute bottom-12 left-8">
+                    <img src="/location-pin.png" alt="Medical facility" className="w-6 h-8" />
+                  </div>
+
+                  <div className="absolute bottom-16 right-12">
+                    <img src="/location-pin.png" alt="Medical facility" className="w-6 h-8" />
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-4 h-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm font-medium">Estimated Cost</p>
-                    <p className="text-xs text-gray-600">{analysis?.cost}</p>
+              </div>
+
+              {/* Prescription Options */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <Pill className="w-3 h-3 text-white" />
                   </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Prescription Options</h2>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Find Healthcare */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#C1121F]" />
-                  Find Healthcare
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full bg-[#C1121F] hover:bg-[#9e0e19] text-white">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  Find Nearby Doctors
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Telemedicine
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Treatment Information */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Medications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Pill className="w-5 h-5 text-[#C1121F]" />
-                Medications
-              </CardTitle>
-              <CardDescription>Over-the-counter options</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.otc_medications.map((med, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                    <Pill className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{med}</span>
-                  </div>
-                ))}
+                <div className="space-y-3">
+                  {analysisData.prescriptions.map((prescription, index) => (
+                    <div key={index} className="bg-[#F3FFF3] rounded-lg p-4">
+                      <div className="font-medium text-gray-900 mb-1">{prescription.name}</div>
+                      <div className="text-sm text-gray-600">Cost: {prescription.cost}</div>
+                      <div className="text-sm text-gray-600">Duration: {prescription.duration}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Home Remedies */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Home className="w-5 h-5 text-[#C1121F]" />
-                Home Remedies
-              </CardTitle>
-              <CardDescription>Natural treatment options</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.home_remedies.map((remedy, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
-                    <Home className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">{remedy}</span>
+              {/* Over-the-Counter */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <Pill className="w-3 h-3 text-white" />
                   </div>
-                ))}
+                  <h2 className="text-lg font-semibold text-gray-900">Over-the-Counter</h2>
+                </div>
+                <div className="space-y-3">
+                  {analysisData.otcMedications.map((medication, index) => (
+                    <div key={index} className="bg-[#EDFAFF] rounded-lg p-4">
+                      <div className="font-medium text-gray-900 mb-1">{medication.name}</div>
+                      <div className="text-sm text-gray-600">{medication.use}</div>
+                      <div className="text-sm text-gray-600">Cost: {medication.cost}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* Questions to Ask Doctor */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-[#C1121F]" />
-                Questions for Doctor
-              </CardTitle>
-              <CardDescription>Important questions to discuss</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.questions.map((question, index) => (
-                  <div key={index} className="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
-                    <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{question}</span>
+              {/* Home Remedies - Full Width */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6 lg:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <span className="text-white text-xs font-bold">H</span>
                   </div>
-                ))}
+                  <h2 className="text-lg font-semibold text-gray-900">Home Remedies</h2>
+                </div>
+                <ul className="space-y-2">
+                  {analysisData.homeRemedies.map((remedy, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-sm text-gray-700">{remedy}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Medical Disclaimer */}
-        <Card className="border-amber-200 bg-amber-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-800">
-              <AlertTriangle className="w-5 h-5" />
-              Important Medical Disclaimer
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-amber-700 text-sm leading-relaxed mb-4">
-              This AI-powered analysis is for informational purposes only and should not be considered as professional
-              medical advice, diagnosis, or treatment. The suggestions provided are based on general medical knowledge
-              and should not replace consultation with qualified healthcare professionals.
-            </p>
-            <div className="flex flex-wrap gap-3">
+              {/* Expected Duration */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <Clock className="w-3 h-3 text-white" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Expected Duration</h2>
+                </div>
+                <div className="text-left py-0 -mt-2">
+                  <div className="text-sm text-gray-700">{analysisData.expectedDuration}</div>
+                </div>
+              </div>
+
+              {/* Estimated Treatment Cost */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <span className="text-white text-xs font-bold">$</span>
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Estimated Treatment Cost</h2>
+                </div>
+                <div className="text-left py-0 -mt-2">
+                  <div className="text-sm text-gray-700">{analysisData.estimatedCost}</div>
+                </div>
+              </div>
+
+              {/* Additional Questions to Consider - Full Width */}
+              <div className="bg-white rounded-2xl border border-[#DDDDDD] shadow-sm p-6 lg:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-6 h-6 bg-[#C21E26] rounded-full flex items-center justify-center border-2 border-[#9F191F]">
+                    <span className="text-white text-xs font-bold">?</span>
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-900">Additional Questions to Consider</h2>
+                </div>
+                <ul className="space-y-2">
+                  {analysisData.additionalQuestions.map((question, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-sm text-gray-700">{question}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-6 mt-8 pb-8">
               <Button
-                onClick={() => window.open("tel:911", "_blank")}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  // Check if Web Share API is supported and available
+                  if (
+                    navigator.share &&
+                    navigator.canShare &&
+                    navigator.canShare({
+                      title: "Symptom Analysis Results",
+                      text: `Analysis for: ${userSymptoms}`,
+                      url: window.location.href,
+                    })
+                  ) {
+                    navigator
+                      .share({
+                        title: "Symptom Analysis Results",
+                        text: `Analysis for: ${userSymptoms}`,
+                        url: window.location.href,
+                      })
+                      .catch((error) => {
+                        // If sharing fails, fall back to clipboard
+                        console.log("Share failed, falling back to clipboard:", error)
+                        navigator.clipboard
+                          .writeText(window.location.href)
+                          .then(() => {
+                            alert("Link copied to clipboard!")
+                          })
+                          .catch(() => {
+                            // Final fallback if clipboard also fails
+                            alert("Unable to share. Please copy the URL manually.")
+                          })
+                      })
+                  } else {
+                    // Fallback to clipboard if Web Share API is not supported
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                      navigator.clipboard
+                        .writeText(window.location.href)
+                        .then(() => {
+                          alert("Link copied to clipboard!")
+                        })
+                        .catch(() => {
+                          // Final fallback if clipboard also fails
+                          alert("Unable to copy link. Please copy the URL manually.")
+                        })
+                    } else {
+                      // Final fallback for older browsers
+                      alert("Sharing not supported. Please copy the URL manually: " + window.location.href)
+                    }
+                  }
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
               >
-                Emergency: Call 911
+                <Share2 className="w-4 h-4" />
               </Button>
               <Button
-                variant="outline"
-                onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
-                className="border-amber-300 text-amber-700 hover:bg-amber-100"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const content = `Symptom Analysis Results\n\nSymptoms: ${userSymptoms}\n\nPossible Conditions:\n${analysisData.possibleConditions.map((c) => `- ${c.condition} (${c.percentage})`).join("\n")}\n\nHome Remedies:\n${analysisData.homeRemedies.map((r) => `- ${r}`).join("\n")}`
+                  const blob = new Blob([content], { type: "text/plain" })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement("a")
+                  a.href = url
+                  a.download = "symptom-analysis.txt"
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
               >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Find Local Doctors
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/")}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  // Store positive feedback
+                  localStorage.setItem("feedback-positive", "true")
+                  alert("Thank you for your positive feedback!")
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  // Store negative feedback
+                  localStorage.setItem("feedback-negative", "true")
+                  alert("Thank you for your feedback. We will work to improve our analysis.")
+                }}
+                className="text-gray-500 hover:text-gray-700 hover:bg-gray-50 p-2 rounded-lg border border-[#8E8E8E]"
+              >
+                <ThumbsDown className="w-4 h-4" />
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
