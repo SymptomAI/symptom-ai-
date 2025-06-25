@@ -236,7 +236,7 @@ export default function HomePage() {
   return (
     <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-72 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -379,16 +379,7 @@ export default function HomePage() {
             {/* Welcome Message */}
             <div className="mb-8">
               <div className="rounded-2xl p-8 bg-white border border-gray-200">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-[#C1121F] to-[#8B0000] bg-clip-text text-transparent">
-                  Welcome to Symptom AI
-                </h1>
-                <p className="text-xl mb-2 bg-gradient-to-r from-[#C1121F] to-[#8B0000] bg-clip-text text-transparent font-semibold">
-                  Get instant AI-powered analysis of your symptoms and personalized health recommendations.
-                </p>
-                <p className="text-sm text-gray-600">
-                  Describe your symptoms below and receive comprehensive medical insights powered by advanced AI
-                  technology.
-                </p>
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-black">Welcome to Symptom AI</h1>
               </div>
             </div>
 
