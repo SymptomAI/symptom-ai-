@@ -221,7 +221,20 @@ export default function HomePage() {
     }
   }
 
-  const commonSymptoms = ["Headache", "Chest Pain", "Shortness of Breath", "Abdominal Pain", "Fever", "Fatigue"]
+  const commonSymptoms = [
+    "Headache",
+    "Chest Pain",
+    "Shortness of Breath",
+    "Abdominal Pain",
+    "Fever",
+    "Fatigue",
+    "Nausea",
+    "Dizziness",
+    "Back Pain",
+    "Joint Pain",
+    "Cough",
+    "Sore Throat",
+  ]
 
   return (
     <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
@@ -345,9 +358,7 @@ export default function HomePage() {
         {/* Header */}
         <div className="px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <img src="/symptom-ai-header-logo.png" alt="Symptom AI" className="h-8" />
-            </div>
+            <div className="flex items-center gap-4"></div>
 
             {/* User Profile */}
             <div
