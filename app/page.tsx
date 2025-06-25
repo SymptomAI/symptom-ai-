@@ -378,8 +378,9 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-8 py-6">
             {/* Welcome Message */}
             <div className="mb-8">
-              <div className="rounded-2xl p-8 bg-white border border-gray-200">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4 text-black">Welcome to Symptom AI</h1>
+              <div className="px-8">
+                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-black">Hello Matthew</h1>
+                <p className="text-xl text-gray-600">How are you feeling today?</p>
               </div>
             </div>
 
