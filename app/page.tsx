@@ -230,9 +230,6 @@ export default function HomePage() {
     "Fatigue",
     "Nausea",
     "Dizziness",
-    "Back Pain",
-    "Joint Pain",
-    "Cough",
     "Sore Throat",
   ]
 
@@ -381,12 +378,14 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-8 py-6">
             {/* Welcome Message */}
             <div className="mb-8">
-              <div className="bg-gradient-to-r from-[#C1121F] to-[#8B0000] rounded-2xl p-8 text-white">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome to Symptom AI</h1>
-                <p className="text-xl opacity-90 mb-2">
+              <div className="rounded-2xl p-8 bg-white border border-gray-200">
+                <h1 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-[#C1121F] to-[#8B0000] bg-clip-text text-transparent">
+                  Welcome to Symptom AI
+                </h1>
+                <p className="text-xl mb-2 bg-gradient-to-r from-[#C1121F] to-[#8B0000] bg-clip-text text-transparent font-semibold">
                   Get instant AI-powered analysis of your symptoms and personalized health recommendations.
                 </p>
-                <p className="text-sm opacity-75">
+                <p className="text-sm text-gray-600">
                   Describe your symptoms below and receive comprehensive medical insights powered by advanced AI
                   technology.
                 </p>
