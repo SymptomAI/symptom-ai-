@@ -221,12 +221,22 @@ export default function HomePage() {
     }
   }
 
-  const commonSymptoms = ["Headache", "Chest Pain", "Shortness of Breath", "Abdominal Pain", "Fever", "Fatigue"]
+  const commonSymptoms = [
+    "Headache",
+    "Chest Pain",
+    "Shortness of Breath",
+    "Abdominal Pain",
+    "Fever",
+    "Fatigue",
+    "Nausea",
+    "Dizziness",
+    "Sore Throat",
+  ]
 
   return (
     <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-72 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -345,9 +355,7 @@ export default function HomePage() {
         {/* Header */}
         <div className="px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <img src="/symptom-ai-header-logo.png" alt="Symptom AI" className="h-8" />
-            </div>
+            <div className="flex items-center gap-4"></div>
 
             {/* User Profile */}
             <div
@@ -370,15 +378,9 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto px-8 py-6">
             {/* Welcome Message */}
             <div className="mb-8">
-              <div className="bg-gradient-to-r from-[#C1121F] to-[#8B0000] rounded-2xl p-8 text-white">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome to Symptom AI</h1>
-                <p className="text-xl opacity-90 mb-2">
-                  Get instant AI-powered analysis of your symptoms and personalized health recommendations.
-                </p>
-                <p className="text-sm opacity-75">
-                  Describe your symptoms below and receive comprehensive medical insights powered by advanced AI
-                  technology.
-                </p>
+              <div className="px-8">
+                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-black">Hello Matthew</h1>
+                <p className="text-xl text-gray-600">How are you feeling today?</p>
               </div>
             </div>
 
