@@ -231,6 +231,7 @@ export default function HomePage() {
     "Nausea",
     "Dizziness",
     "Sore Throat",
+    "Cough",
   ]
 
   return (
@@ -374,8 +375,8 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-auto">
-          <div className="max-w-6xl mx-auto px-8 py-3">
+        <div className="flex-1 flex flex-col">
+          <div className="max-w-6xl mx-auto px-8 py-3 flex-1 flex flex-col">
             {/* Welcome Message */}
             <div className="mb-4">
               <div className="px-4 text-center">
@@ -385,8 +386,8 @@ export default function HomePage() {
             </div>
 
             {/* Main Input Section */}
-            <div className="mb-4">
-              <Card className="border-2 border-[#DDDDDD] shadow-lg">
+            <div className="mb-4 flex-1">
+              <Card className="border-2 border-[#DDDDDD] shadow-lg h-full">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
@@ -396,12 +397,12 @@ export default function HomePage() {
                     Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 flex flex-col h-full">
                   <Textarea
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[80px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="flex-1 text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
