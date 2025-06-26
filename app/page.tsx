@@ -375,17 +375,17 @@ export default function HomePage() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-auto">
-          <div className="max-w-6xl mx-auto px-8 py-6">
+          <div className="max-w-6xl mx-auto px-8 py-3">
             {/* Welcome Message */}
-            <div className="mb-8">
-              <div className="px-8 text-center">
+            <div className="mb-4">
+              <div className="px-4 text-center">
                 <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-[#C1121F]">Hello Matthew 👋</h1>
                 <p className="text-2xl lg:text-3xl text-black">How are you feeling today?</p>
               </div>
             </div>
 
             {/* Main Input Section */}
-            <div className="mb-8">
+            <div className="mb-4">
               <Card className="border-2 border-[#DDDDDD] shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-xl">
@@ -396,12 +396,12 @@ export default function HomePage() {
                     Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                   <Textarea
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[120px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[80px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
@@ -442,9 +442,9 @@ export default function HomePage() {
             </div>
 
             {/* Quick Select Common Symptoms */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Select Common Symptoms:</h2>
-              <div className="flex flex-wrap gap-3">
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">Quick Select Common Symptoms:</h2>
+              <div className="flex flex-wrap gap-2">
                 {commonSymptoms.map((symptom, index) => (
                   <button
                     key={index}
