@@ -277,7 +277,7 @@ export default function SettingsPage() {
   return (
     <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
