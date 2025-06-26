@@ -618,14 +618,14 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                   <CardDescription>Natural treatment options you can try at home</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <ul className="space-y-2">
                     {analysis?.home_remedies.map((remedy, index) => (
-                      <div key={index} className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
-                        <Home className="w-4 h-4 text-green-600 flex-shrink-0" />
+                      <li key={index} className="flex items-start gap-2 text-gray-900">
+                        <span className="text-sm mt-1">•</span>
                         <span className="text-sm">{remedy}</span>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </CardContent>
               </Card>
 
@@ -653,9 +653,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                 </CardHeader>
                 <CardContent>
                   <p className="text-amber-700 text-sm leading-relaxed mb-4">
-                    This AI-powered analysis is for informational purposes only and should not be considered as
-                    professional medical advice, diagnosis, or treatment. The suggestions provided are based on general
-                    medical knowledge and should not replace consultation with qualified healthcare professionals.
+                    This analysis is for informational purposes only and should not replace professional medical advice.
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <Button
