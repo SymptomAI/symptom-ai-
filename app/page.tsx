@@ -380,7 +380,7 @@ export default function HomePage() {
             <div className="mb-8">
               <div className="px-8 text-center">
                 <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-[#C1121F]">Hello Matthew 👋</h1>
-                <p className="text-4xl lg:text-5xl text-black">How are you feeling today?</p>
+                <p className="text-2xl lg:text-3xl text-black">How are you feeling today?</p>
               </div>
             </div>
 

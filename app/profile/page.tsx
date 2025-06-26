@@ -153,7 +153,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#FCFCFC]">
+    <div className="flex h-screen bg-[#FCFCFC] relative">
       {/* Left Sidebar */}
       <div className="w-80 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
@@ -273,7 +273,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col pb-20">
         {/* Header */}
         <div className="px-8 py-4">
           <div className="flex justify-between items-center">
@@ -517,8 +517,9 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
       {/* Save Button - Fixed at bottom */}
-      <div className="border-t border-gray-200 bg-white px-8 py-4">
+      <div className="fixed bottom-0 left-80 right-0 border-t border-gray-200 bg-white px-8 py-4 shadow-lg">
         <div className="max-w-4xl mx-auto flex justify-center">
           <Button
             onClick={handleSave}
