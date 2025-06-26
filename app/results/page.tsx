@@ -608,8 +608,8 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                         "Topical anti-inflammatory cream",
                         "Prescription pain relievers",
                       ].map((med, index) => (
-                        <div key={index} className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
-                          <Pill className="w-4 h-4 text-red-600" />
+                        <div key={index} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
+                          <Pill className="w-4 h-4 text-green-600" />
                           <span className="text-sm">{med}</span>
                         </div>
                       ))}
@@ -666,7 +666,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
             </div>
 
             {/* Feedback Buttons - Moved to bottom */}
-            <div className="flex justify-center gap-3 mb-8">
+            <div className="flex justify-start gap-3 mb-8">
               <Button onClick={() => handleFeedback(true)} variant="outline" size="icon">
                 <ThumbsUp className="w-4 h-4" />
               </Button>
