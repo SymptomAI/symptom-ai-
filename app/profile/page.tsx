@@ -517,22 +517,24 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-      {/* Save Button */}
-      <div className="mt-8 flex justify-center">
-        <Button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-3 rounded-lg font-semibold"
-        >
-          {isSaving ? (
-            <>
-              <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              Saving...
-            </>
-          ) : (
-            "Save Profile"
-          )}
-        </Button>
+      {/* Save Button - Fixed at bottom */}
+      <div className="border-t border-gray-200 bg-white px-8 py-4">
+        <div className="max-w-4xl mx-auto flex justify-center">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-3 rounded-lg font-semibold"
+          >
+            {isSaving ? (
+              <>
+                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Saving...
+              </>
+            ) : (
+              "Save Profile"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   )
