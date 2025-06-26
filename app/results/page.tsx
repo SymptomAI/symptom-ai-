@@ -462,26 +462,6 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
               </div>
             </div>
 
-            {/* Feedback Buttons */}
-            <div className="flex gap-3 mb-8">
-              <Button onClick={() => handleFeedback(true)} variant="outline" className="flex items-center gap-2">
-                <ThumbsUp className="w-4 h-4" />
-                Helpful
-              </Button>
-              <Button onClick={() => handleFeedback(false)} variant="outline" className="flex items-center gap-2">
-                <ThumbsDown className="w-4 h-4" />
-                Not Helpful
-              </Button>
-              <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-              <Button onClick={handleDownload} variant="outline" className="flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Download
-              </Button>
-            </div>
-
             {/* Possible Conditions - Standalone Section */}
             <div className="mb-8">
               <Card>
@@ -621,18 +601,18 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {analysis?.prescriptions && analysis.prescriptions.length > 0 ? (
-                        analysis.prescriptions.map((med, index) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
-                            <Pill className="w-4 h-4 text-red-600" />
-                            <span className="text-sm">{med}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-sm text-gray-500 italic">
-                          Consult with a healthcare provider for prescription options
+                      {[
+                        "Ibuprofen 600mg (prescription strength)",
+                        "Naproxen 500mg",
+                        "Muscle relaxants (Cyclobenzaprine)",
+                        "Topical anti-inflammatory cream",
+                        "Prescription pain relievers",
+                      ].map((med, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
+                          <Pill className="w-4 h-4 text-red-600" />
+                          <span className="text-sm">{med}</span>
                         </div>
-                      )}
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
@@ -683,6 +663,22 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
               {/* Expected Duration and Treatment Cost - Side by Side */}
 
               {/* Additional Questions - Standalone */}
+            </div>
+
+            {/* Feedback Buttons - Moved to bottom */}
+            <div className="flex justify-center gap-3 mb-8">
+              <Button onClick={() => handleFeedback(true)} variant="outline" size="icon">
+                <ThumbsUp className="w-4 h-4" />
+              </Button>
+              <Button onClick={() => handleFeedback(false)} variant="outline" size="icon">
+                <ThumbsDown className="w-4 h-4" />
+              </Button>
+              <Button onClick={handleShare} variant="outline" size="icon">
+                <Share2 className="w-4 h-4" />
+              </Button>
+              <Button onClick={handleDownload} variant="outline" size="icon">
+                <Download className="w-4 h-4" />
+              </Button>
             </div>
 
             {/* Medical Disclaimer */}
