@@ -17,10 +17,7 @@ import {
   TrendingUp,
   CheckCircle,
   Stethoscope,
-  Shield,
-  Brain,
   AlertCircle,
-  Zap,
   Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -242,6 +239,8 @@ export default function HomePage() {
     "Experiencing chest tightness and difficulty breathing",
     "Sudden onset of severe abdominal pain",
     "High fever with body aches and fatigue",
+    "Persistent cough with yellow phlegm and shortness of breath",
+    "Sharp lower back pain that radiates down my leg",
   ]
 
   return (
@@ -371,7 +370,7 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="px-8 py-3 border-b border-gray-100">
+        <div className="px-8 py-2 border-b border-gray-100">
           <div className="flex justify-end items-center">
             {/* User Profile */}
             <div
@@ -390,10 +389,10 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-4">
           <div className="max-w-6xl mx-auto h-full flex flex-col">
             {/* Main Input Section */}
-            <div className="mb-5">
+            <div className="mb-4">
               <Card className="border-2 border-[#DDDDDD] shadow-lg">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
@@ -454,64 +453,26 @@ export default function HomePage() {
               </Card>
             </div>
 
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-2 gap-8 flex-1">
-              {/* Quick Prompts */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start Prompts:</h3>
-                <div className="space-y-3">
-                  {quickPrompts.map((prompt, index) => (
-                    <Card
-                      key={index}
-                      className="cursor-pointer hover:shadow-md transition-shadow border-gray-200 hover:border-[#C1121F]/30"
-                      onClick={() => setSymptoms(prompt)}
-                    >
-                      <CardContent className="p-4">
-                        <p className="text-sm text-gray-700">{prompt}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-
-              {/* System Features */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">System Capabilities:</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                    <Brain className="w-6 h-6 text-blue-600" />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">AI-Powered Analysis</div>
-                      <div className="text-xs text-gray-600">Advanced machine learning algorithms</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                    <Shield className="w-6 h-6 text-green-600" />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">Privacy Protected</div>
-                      <div className="text-xs text-gray-600">Your data is encrypted and secure</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
-                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">Medical Grade</div>
-                      <div className="text-xs text-gray-600">Developed with medical professionals</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg">
-                    <Zap className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">Instant Results</div>
-                      <div className="text-xs text-gray-600">Get insights in seconds</div>
-                    </div>
-                  </div>
-                </div>
+            {/* Quick Prompts - Single Column */}
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start Prompts:</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {quickPrompts.map((prompt, index) => (
+                  <Card
+                    key={index}
+                    className="cursor-pointer hover:shadow-md transition-shadow border-gray-200 hover:border-[#C1121F]/30"
+                    onClick={() => setSymptoms(prompt)}
+                  >
+                    <CardContent className="p-4">
+                      <p className="text-sm text-gray-700">{prompt}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
 
             {/* Common Symptoms Footer */}
-            <div className="mt-5 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Common Symptoms:</h4>
