@@ -13,12 +13,16 @@ import {
   Send,
   Mic,
   MapPin,
+  Users,
+  TrendingUp,
+  CheckCircle,
   Stethoscope,
   Shield,
   Brain,
   Activity,
   AlertCircle,
   Zap,
+  Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -236,23 +240,25 @@ export default function HomePage() {
   ]
 
   const quickPrompts = [
-    "Acute chest pain with dyspnea",
-    "Severe headache with photophobia",
-    "Abdominal pain with nausea",
-    "High fever with myalgia",
+    "I've been experiencing a persistent headache for the past 2 days",
+    "Experiencing chest tightness and difficulty breathing",
+    "Sudden onset of severe abdominal pain",
+    "High fever with body aches and fatigue",
   ]
 
   return (
-    <div className="flex h-screen bg-[#F8F9FA] overflow-hidden">
+    <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-64 bg-white flex flex-col h-full shadow-sm border-r border-gray-200">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
-          <div className="flex items-center gap-3 mb-4">
-            <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-7 h-7" />
-            <div>
-              <h1 className="text-base font-bold text-gray-900">SYMPTOM AI</h1>
-              <p className="text-xs text-gray-500">Clinical Decision Support</p>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8" />
+              <div>
+                <h1 className="text-lg font-bold text-gray-900">SYMPTOM AI</h1>
+                <p className="text-xs text-gray-500">AI-Powered Medical Analysis</p>
+              </div>
             </div>
           </div>
 
@@ -260,66 +266,78 @@ export default function HomePage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search cases..."
-              className="pl-10 bg-gray-50 border-gray-200 rounded-md text-sm h-8 focus:ring-1 focus:ring-[#C1121F]/20"
+              placeholder="Search chat"
+              className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
             />
           </div>
         </div>
 
         {/* Stats */}
         <div className="p-4 border-b border-gray-100">
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="text-center">
-              <div className="font-bold text-gray-900">2.3M+</div>
-              <div className="text-gray-500">Cases</div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Medical Professionals</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">15,000+</span>
             </div>
-            <div className="text-center">
-              <div className="font-bold text-gray-900">96.8%</div>
-              <div className="text-gray-500">Accuracy</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Analyses Completed</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">2.3M+</span>
             </div>
-            <div className="text-center">
-              <div className="font-bold text-gray-900">15K+</div>
-              <div className="text-gray-500">Providers</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Accuracy Rate</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">96.8%</span>
             </div>
-            <div className="text-center">
-              <div className="font-bold text-gray-900">50+</div>
-              <div className="text-gray-500">Countries</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Countries Served</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">50+</span>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
         <div className="p-4 flex-1">
-          <nav className="space-y-1 mb-4">
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-md font-medium text-sm">
+          <nav className="space-y-1 mb-6">
+            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
               <House className="w-4 h-4" />
               <span>New Analysis</span>
             </div>
             <div
               onClick={() => router.push("/library")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md cursor-pointer font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
             >
               <BookOpen className="w-4 h-4" />
               <span>Medical Library</span>
             </div>
             <div
               onClick={() => router.push("/history")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md cursor-pointer font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
             >
               <Clock className="w-4 h-4" />
               <span>Case History</span>
             </div>
           </nav>
 
-          {/* Recent Cases */}
-          <div className="mb-4">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Recent Cases</h3>
+          {/* Recent Conversations */}
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Conversations</h3>
             <div className="space-y-1">
               {recentChats.length > 0 ? (
                 recentChats.map((chat, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer group touch-manipulation"
                     onClick={() => handleRecentChatClick(chat)}
                   >
                     <MessageCircle className="w-3 h-3 flex-shrink-0" />
@@ -327,26 +345,26 @@ export default function HomePage() {
                   </div>
                 ))
               ) : (
-                <div className="px-3 py-2 text-center text-gray-400 text-xs">No recent cases</div>
+                <div className="px-3 py-4 text-center text-gray-400 text-xs">No recent conversations</div>
               )}
             </div>
           </div>
 
           {/* Bottom Navigation */}
-          <div className="space-y-1 mt-auto">
+          <div className="space-y-1">
             <div
               onClick={() => router.push("/settings")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md cursor-pointer font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
             >
               <Settings className="w-4 h-4" />
               <span>Settings</span>
             </div>
             <div
               onClick={() => router.push("/help")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-md cursor-pointer font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
             >
               <HelpCircle className="w-4 h-4" />
-              <span>Support</span>
+              <span>Help & Support</span>
             </div>
           </div>
         </div>
@@ -355,99 +373,88 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="px-6 py-3 border-b border-gray-200 bg-white">
+        <div className="px-8 py-4 border-b border-gray-100">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 text-xs">
+              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
                 <Activity className="w-3 h-3 mr-1" />
-                System Online
+                System Healthy
               </Badge>
-              <div className="text-sm text-gray-600">Clinical Decision Support System v2.1</div>
             </div>
 
             {/* User Profile */}
             <div
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-md p-2 transition-colors"
+              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
               onClick={() => router.push("/profile")}
             >
               <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">Dr. Matthew Anderson</div>
-                <div className="text-xs text-gray-500">Internal Medicine</div>
+                <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
+                <div className="text-xs text-gray-500">Manderson@gmail.com</div>
               </div>
-              <div className="w-8 h-8 bg-[#C1121F] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">MA</span>
+              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-xl">M</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
-          <div className="max-w-5xl mx-auto h-full flex flex-col">
-            {/* Header */}
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Symptom Analysis & Clinical Decision Support</h1>
-              <p className="text-gray-600">
-                Enter patient symptoms for AI-powered differential diagnosis and treatment recommendations
-              </p>
-            </div>
-
+        <div className="flex-1 p-8">
+          <div className="max-w-6xl mx-auto h-full flex flex-col">
             {/* Main Input Section */}
             <div className="mb-6">
-              <Card className="border border-gray-200 shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Stethoscope className="w-5 h-5 text-[#C1121F]" />
-                    Patient Symptom Assessment
+              <Card className="border-2 border-[#DDDDDD] shadow-lg">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
+                    Describe Your Symptoms
                   </CardTitle>
-                  <CardDescription>
-                    Document presenting symptoms, duration, severity, and relevant clinical context
+                  <CardDescription className="text-base">
+                    Be as detailed as possible. Include when symptoms started, severity, location, and any relevant
+                    context for the most accurate analysis.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Textarea
-                    placeholder="Chief complaint: Patient presents with... 
-History of present illness: Symptoms began... 
-Associated symptoms: Patient also reports... 
-Relevant medical history: ..."
+                    placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever (99.5°F) and fatigue. The headache is worse in the morning and I feel nauseous. I also have some sensitivity to light..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[100px] text-sm border-gray-200 focus:ring-1 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[100px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                       <Button
                         onClick={handleVoiceInput}
                         variant="outline"
                         size="sm"
-                        className="text-xs border-gray-300 hover:bg-gray-50 bg-transparent"
+                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
                       >
-                        <Mic className="w-3 h-3 mr-1" />
-                        Voice
+                        <Mic className="w-4 h-4" />
+                        Voice Input
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs border-gray-300 hover:bg-gray-50 bg-transparent"
+                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
                       >
-                        <MapPin className="w-3 h-3 mr-1" />
-                        Location
+                        <MapPin className="w-4 h-4" />
+                        Use Location
                       </Button>
                     </div>
                     <Button
                       onClick={handleAnalyze}
                       disabled={isAnalyzing || !symptoms.trim()}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 font-medium text-sm"
+                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 font-semibold text-base"
                     >
                       {isAnalyzing ? (
                         <>
-                          <div className="w-3 h-3 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
                           Analyzing...
                         </>
                       ) : (
                         <>
-                          <Send className="w-3 h-3 mr-2" />
-                          Generate Analysis
+                          <Send className="w-4 h-4 mr-2" />
+                          Analyze Symptoms
                         </>
                       )}
                     </Button>
@@ -457,19 +464,19 @@ Relevant medical history: ..."
             </div>
 
             {/* Two Column Layout */}
-            <div className="grid grid-cols-2 gap-6 flex-1">
-              {/* Quick Templates */}
+            <div className="grid grid-cols-2 gap-8 flex-1">
+              {/* Quick Prompts */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Clinical Templates</h3>
-                <div className="space-y-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Start Prompts:</h3>
+                <div className="space-y-3">
                   {quickPrompts.map((prompt, index) => (
                     <Card
                       key={index}
-                      className="cursor-pointer hover:shadow-sm transition-shadow border-gray-200 hover:border-[#C1121F]/30"
+                      className="cursor-pointer hover:shadow-md transition-shadow border-gray-200 hover:border-[#C1121F]/30"
                       onClick={() => setSymptoms(prompt)}
                     >
-                      <CardContent className="p-3">
-                        <p className="text-xs text-gray-700">{prompt}</p>
+                      <CardContent className="p-4">
+                        <p className="text-sm text-gray-700">{prompt}</p>
                       </CardContent>
                     </Card>
                   ))}
@@ -478,34 +485,34 @@ Relevant medical history: ..."
 
               {/* System Features */}
               <div>
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">System Capabilities</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-md">
-                    <Brain className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">System Capabilities:</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                    <Brain className="w-6 h-6 text-blue-600" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900">AI Differential Diagnosis</div>
-                      <div className="text-xs text-gray-600">Evidence-based condition ranking</div>
+                      <div className="text-sm font-medium text-gray-900">AI-Powered Analysis</div>
+                      <div className="text-xs text-gray-600">Advanced machine learning algorithms</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-green-50 rounded-md">
-                    <Shield className="w-5 h-5 text-green-600" />
+                  <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                    <Shield className="w-6 h-6 text-green-600" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900">HIPAA Compliant</div>
-                      <div className="text-xs text-gray-600">Secure patient data handling</div>
+                      <div className="text-sm font-medium text-gray-900">Privacy Protected</div>
+                      <div className="text-xs text-gray-600">Your data is encrypted and secure</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-red-50 rounded-md">
-                    <Stethoscope className="w-5 h-5 text-[#C1121F]" />
+                  <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
+                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900">Clinical Guidelines</div>
-                      <div className="text-xs text-gray-600">Evidence-based recommendations</div>
+                      <div className="text-sm font-medium text-gray-900">Medical Grade</div>
+                      <div className="text-xs text-gray-600">Developed with medical professionals</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-md">
-                    <Zap className="w-5 h-5 text-yellow-600" />
+                  <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg">
+                    <Zap className="w-6 h-6 text-yellow-600" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900">Real-time Analysis</div>
-                      <div className="text-xs text-gray-600">Instant clinical insights</div>
+                      <div className="text-sm font-medium text-gray-900">Instant Results</div>
+                      <div className="text-xs text-gray-600">Get insights in seconds</div>
                     </div>
                   </div>
                 </div>
@@ -513,16 +520,16 @@ Relevant medical history: ..."
             </div>
 
             {/* Common Symptoms Footer */}
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-6 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-medium text-gray-700 mb-2">Common Presentations:</h4>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Common Symptoms:</h4>
                   <div className="flex flex-wrap gap-2">
                     {commonSymptoms.map((symptom, index) => (
                       <button
                         key={index}
                         onClick={() => setSymptoms(symptom)}
-                        className="px-3 py-1 border border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors text-xs"
+                        className="px-3 py-1 border border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors text-sm"
                       >
                         {symptom}
                       </button>
@@ -532,7 +539,7 @@ Relevant medical history: ..."
                 <div className="text-right">
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <AlertCircle className="w-3 h-3" />
-                    <span>For emergency cases, contact emergency services immediately</span>
+                    <span>For emergencies, call 911 immediately</span>
                   </div>
                 </div>
               </div>
