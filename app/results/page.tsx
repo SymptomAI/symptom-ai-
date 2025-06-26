@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
+  Search,
+  HomeIcon as House,
+  BookOpen,
+  Clock,
+  Settings,
+  HelpCircle,
+  MessageCircle,
   ArrowLeft,
   MapPin,
   Phone,
@@ -17,10 +24,12 @@ import {
   Download,
   AlertTriangle,
   ExternalLink,
-  Clock,
-  HelpCircle,
+  Users,
+  TrendingUp,
+  CheckCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -44,8 +53,25 @@ export default function ResultsPage() {
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null)
   const [userSymptoms, setUserSymptoms] = useState("")
   const [isLoading, setIsLoading] = useState(true)
+  const [recentChats, setRecentChats] = useState<string[]>([])
 
   useEffect(() => {
+    // Load recent chats from localStorage
+    const loadRecentChats = () => {
+      const savedHistory = localStorage.getItem("searchHistory")
+      if (savedHistory) {
+        try {
+          const history = JSON.parse(savedHistory)
+          setRecentChats(history.slice(0, 3))
+        } catch (error) {
+          console.error("Error parsing search history:", error)
+          setRecentChats([])
+        }
+      } else {
+        setRecentChats([])
+      }
+    }
+
     // Load analysis data from sessionStorage
     const loadAnalysisData = () => {
       const savedAnalysis = sessionStorage.getItem("symptomAnalysis")
@@ -67,8 +93,53 @@ export default function ResultsPage() {
       setIsLoading(false)
     }
 
+    loadRecentChats()
     loadAnalysisData()
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "searchHistory") {
+        loadRecentChats()
+      }
+    }
+
+    window.addEventListener("storage", handleStorageChange)
+
+    const handleCustomUpdate = () => {
+      loadRecentChats()
+    }
+
+    window.addEventListener("searchHistoryUpdated", handleCustomUpdate)
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange)
+      window.removeEventListener("searchHistoryUpdated", handleCustomUpdate)
+    }
   }, [router])
+
+  const handleRecentChatClick = (chat: string) => {
+    // Find the analysis data for this chat from detailed history
+    const detailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
+    let foundAnalysis = null
+
+    for (const dateGroup of detailedHistory) {
+      const foundSearch = dateGroup.searches.find((search) => search.symptoms === chat)
+      if (foundSearch && foundSearch.analysisData) {
+        foundAnalysis = foundSearch.analysisData
+        break
+      }
+    }
+
+    if (foundAnalysis) {
+      sessionStorage.setItem("symptomAnalysis", JSON.stringify(foundAnalysis))
+      sessionStorage.setItem("userSymptoms", chat)
+      router.push("/results")
+    } else {
+      // If no analysis found, go to home with symptoms pre-filled
+      sessionStorage.setItem("userSymptoms", chat)
+      router.push("/")
+    }
+  }
 
   const handleFeedback = (isPositive: boolean) => {
     alert(isPositive ? "Thank you for your positive feedback!" : "Thank you for your feedback. We'll work to improve.")
@@ -131,251 +202,381 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Button variant="ghost" onClick={() => router.push("/")} className="mr-4">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8 mr-3" />
-              <h1 className="text-xl font-bold text-gray-900">SYMPTOM AI</h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <Button onClick={handleShare} variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-              <Button onClick={handleDownload} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download
-              </Button>
-              <div
-                className="w-8 h-8 bg-[#C1121F] rounded-full flex items-center justify-center cursor-pointer"
-                onClick={() => router.push("/profile")}
-              >
-                <span className="text-white font-bold text-sm">M</span>
+    <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
+      {/* Left Sidebar */}
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
+        {/* Header */}
+        <div className="p-4 border-b border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-8 h-8" />
+              <div>
+                <h1 className="text-lg font-bold text-gray-900">SYMPTOM AI</h1>
+                <p className="text-xs text-gray-500">AI-Powered Medical Analysis</p>
               </div>
             </div>
           </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search chat"
+              className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
+            />
+          </div>
         </div>
-      </header>
+
+        {/* Stats */}
+        <div className="p-4 border-b border-gray-100">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Medical Professionals</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">15,000+</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Analyses Completed</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">2.3M+</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Accuracy Rate</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">96.8%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="p-4 flex-1">
+          <nav className="space-y-1 mb-6">
+            <div
+              onClick={() => router.push("/")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <House className="w-4 h-4" />
+              <span>New Analysis</span>
+            </div>
+            <div
+              onClick={() => router.push("/library")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Medical Library</span>
+            </div>
+            <div
+              onClick={() => router.push("/history")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <Clock className="w-4 h-4" />
+              <span>Case History</span>
+            </div>
+          </nav>
+
+          {/* Recent Conversations */}
+          <div className="mb-6">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Recent Conversations</h3>
+            <div className="space-y-1">
+              {recentChats.length > 0 ? (
+                recentChats.map((chat, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer group touch-manipulation"
+                    onClick={() => handleRecentChatClick(chat)}
+                  >
+                    <MessageCircle className="w-3 h-3 flex-shrink-0" />
+                    <span className="text-xs truncate flex-1">{chat}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-3 py-4 text-center text-gray-400 text-xs">No recent conversations</div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Navigation */}
+          <div className="space-y-1">
+            <div
+              onClick={() => router.push("/settings")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <Settings className="w-4 h-4" />
+              <span>Settings</span>
+            </div>
+            <div
+              onClick={() => router.push("/help")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>Help & Support</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Analysis Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800">
-              <strong>Your symptoms:</strong> "{userSymptoms}"
-            </p>
-          </div>
-        </div>
-
-        {/* Feedback Buttons */}
-        <div className="flex gap-3 mb-8">
-          <Button onClick={() => handleFeedback(true)} variant="outline" className="flex items-center gap-2">
-            <ThumbsUp className="w-4 h-4" />
-            Helpful
-          </Button>
-          <Button onClick={() => handleFeedback(false)} variant="outline" className="flex items-center gap-2">
-            <ThumbsDown className="w-4 h-4" />
-            Not Helpful
-          </Button>
-        </div>
-
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Possible Conditions */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Heart className="w-5 h-5 text-[#C1121F]" />
-                  Possible Conditions
-                </CardTitle>
-                <CardDescription>Based on the symptoms you described</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {analysis?.conditions.map((condition, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900">{condition.name}</h3>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            condition.severity === "high"
-                              ? "destructive"
-                              : condition.severity === "medium"
-                                ? "default"
-                                : "secondary"
-                          }
-                        >
-                          {condition.severity}
-                        </Badge>
-                        <span className="text-sm font-medium text-[#C1121F]">{condition.probability}</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm">{condition.description}</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="space-y-6">
-            {/* Timeline & Cost */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-[#C1121F]" />
-                  Timeline & Cost
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm font-medium">Recovery Time</p>
-                    <p className="text-xs text-gray-600">{analysis?.timeline}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <DollarSign className="w-4 h-4 text-gray-500" />
-                  <div>
-                    <p className="text-sm font-medium">Estimated Cost</p>
-                    <p className="text-xs text-gray-600">{analysis?.cost}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Find Healthcare */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#C1121F]" />
-                  Find Healthcare
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full bg-[#C1121F] hover:bg-[#9e0e19] text-white">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  Find Nearby Doctors
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Telemedicine
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Treatment Information */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Medications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Pill className="w-5 h-5 text-[#C1121F]" />
-                Medications
-              </CardTitle>
-              <CardDescription>Over-the-counter options</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.otc_medications.map((med, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                    <Pill className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm">{med}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Home Remedies */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Home className="w-5 h-5 text-[#C1121F]" />
-                Home Remedies
-              </CardTitle>
-              <CardDescription>Natural treatment options</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.home_remedies.map((remedy, index) => (
-                  <div key={index} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
-                    <Home className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">{remedy}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Questions to Ask Doctor */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-[#C1121F]" />
-                Questions for Doctor
-              </CardTitle>
-              <CardDescription>Important questions to discuss</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {analysis?.questions.map((question, index) => (
-                  <div key={index} className="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
-                    <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-sm">{question}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Medical Disclaimer */}
-        <Card className="border-amber-200 bg-amber-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-800">
-              <AlertTriangle className="w-5 h-5" />
-              Important Medical Disclaimer
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-amber-700 text-sm leading-relaxed mb-4">
-              This AI-powered analysis is for informational purposes only and should not be considered as professional
-              medical advice, diagnosis, or treatment. The suggestions provided are based on general medical knowledge
-              and should not replace consultation with qualified healthcare professionals.
-            </p>
-            <div className="flex flex-wrap gap-3">
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
               <Button
-                onClick={() => window.open("tel:911", "_blank")}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push("/")}
+                className="text-gray-500 hover:text-gray-700"
               >
-                Emergency: Call 911
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
-                className="border-amber-300 text-amber-700 hover:bg-amber-100"
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Find Local Doctors
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Home
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </main>
+
+            {/* User Profile */}
+            <div
+              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
+              onClick={() => router.push("/profile")}
+            >
+              <div className="text-right">
+                <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
+                <div className="text-xs text-gray-500">Manderson@gmail.com</div>
+              </div>
+              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-xl">M</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Results Content */}
+        <div className="flex-1 overflow-auto px-8 py-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Analysis Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-blue-800">
+                  <strong>Your symptoms:</strong> "{userSymptoms}"
+                </p>
+              </div>
+            </div>
+
+            {/* Feedback Buttons */}
+            <div className="flex gap-3 mb-8">
+              <Button onClick={() => handleFeedback(true)} variant="outline" className="flex items-center gap-2">
+                <ThumbsUp className="w-4 h-4" />
+                Helpful
+              </Button>
+              <Button onClick={() => handleFeedback(false)} variant="outline" className="flex items-center gap-2">
+                <ThumbsDown className="w-4 h-4" />
+                Not Helpful
+              </Button>
+              <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
+                <Share2 className="w-4 h-4" />
+                Share
+              </Button>
+              <Button onClick={handleDownload} variant="outline" className="flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+            </div>
+
+            {/* Results Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              {/* Possible Conditions */}
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Heart className="w-5 h-5 text-[#C1121F]" />
+                      Possible Conditions
+                    </CardTitle>
+                    <CardDescription>Based on the symptoms you described</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {analysis?.conditions.map((condition, index) => (
+                      <div key={index} className="border rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-semibold text-gray-900">{condition.name}</h3>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={
+                                condition.severity === "high"
+                                  ? "destructive"
+                                  : condition.severity === "medium"
+                                    ? "default"
+                                    : "secondary"
+                              }
+                            >
+                              {condition.severity}
+                            </Badge>
+                            <span className="text-sm font-medium text-[#C1121F]">{condition.probability}</span>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-sm">{condition.description}</p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="space-y-6">
+                {/* Timeline & Cost */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-[#C1121F]" />
+                      Timeline & Cost
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <div>
+                        <p className="text-sm font-medium">Recovery Time</p>
+                        <p className="text-xs text-gray-600">{analysis?.timeline}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <DollarSign className="w-4 h-4 text-gray-500" />
+                      <div>
+                        <p className="text-sm font-medium">Estimated Cost</p>
+                        <p className="text-xs text-gray-600">{analysis?.cost}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Find Healthcare */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-[#C1121F]" />
+                      Find Healthcare
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button className="w-full bg-[#C1121F] hover:bg-[#9e0e19] text-white">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Find Nearby Doctors
+                    </Button>
+                    <Button variant="outline" className="w-full">
+                      <Phone className="w-4 h-4 mr-2" />
+                      Telemedicine
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Treatment Information */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Medications */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Pill className="w-5 h-5 text-[#C1121F]" />
+                    Medications
+                  </CardTitle>
+                  <CardDescription>Over-the-counter options</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {analysis?.otc_medications.map((med, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                        <Pill className="w-4 h-4 text-gray-500" />
+                        <span className="text-sm">{med}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Home Remedies */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Home className="w-5 h-5 text-[#C1121F]" />
+                    Home Remedies
+                  </CardTitle>
+                  <CardDescription>Natural treatment options</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {analysis?.home_remedies.map((remedy, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
+                        <Home className="w-4 h-4 text-green-600" />
+                        <span className="text-sm">{remedy}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Questions to Ask Doctor */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <HelpCircle className="w-5 h-5 text-[#C1121F]" />
+                    Questions for Doctor
+                  </CardTitle>
+                  <CardDescription>Important questions to discuss</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {analysis?.questions.map((question, index) => (
+                      <div key={index} className="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
+                        <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm">{question}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Medical Disclaimer */}
+            <Card className="border-amber-200 bg-amber-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-amber-800">
+                  <AlertTriangle className="w-5 h-5" />
+                  Important Medical Disclaimer
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-amber-700 text-sm leading-relaxed mb-4">
+                  This AI-powered analysis is for informational purposes only and should not be considered as
+                  professional medical advice, diagnosis, or treatment. The suggestions provided are based on general
+                  medical knowledge and should not replace consultation with qualified healthcare professionals.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    onClick={() => window.open("tel:911", "_blank")}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Emergency: Call 911
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
+                    className="border-amber-300 text-amber-700 hover:bg-amber-100"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Find Local Doctors
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
