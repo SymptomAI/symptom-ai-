@@ -19,7 +19,6 @@ import {
   Stethoscope,
   Shield,
   Brain,
-  Activity,
   AlertCircle,
   Zap,
   Globe,
@@ -28,7 +27,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 export default function HomePage() {
   const router = useRouter()
@@ -373,15 +371,8 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="px-8 py-4 border-b border-gray-100">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-                <Activity className="w-3 h-3 mr-1" />
-                System Healthy
-              </Badge>
-            </div>
-
+        <div className="px-8 py-3 border-b border-gray-100">
+          <div className="flex justify-end items-center">
             {/* User Profile */}
             <div
               className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
@@ -399,12 +390,12 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-6">
           <div className="max-w-6xl mx-auto h-full flex flex-col">
             {/* Main Input Section */}
-            <div className="mb-6">
+            <div className="mb-5">
               <Card className="border-2 border-[#DDDDDD] shadow-lg">
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
                     Describe Your Symptoms
@@ -520,7 +511,7 @@ export default function HomePage() {
             </div>
 
             {/* Common Symptoms Footer */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="mt-5 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Common Symptoms:</h4>
