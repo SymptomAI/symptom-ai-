@@ -515,7 +515,7 @@ export default function HelpPage() {
                   <div className="flex gap-4">
                     <Button
                       onClick={() => window.open("tel:911", "_blank")}
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                      className="bg-red-600 hover:bg-red-700 text-white"
                     >
                       Call 911
                     </Button>
