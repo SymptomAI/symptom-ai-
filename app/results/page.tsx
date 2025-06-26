@@ -557,42 +557,73 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
             </div>
 
             {/* Treatment Information */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              {/* Medications */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Pill className="w-5 h-5 text-[#C1121F]" />
-                    Medications
-                  </CardTitle>
-                  <CardDescription>Over-the-counter options</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {analysis?.otc_medications.map((med, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <Pill className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm">{med}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Treatment Information - Redesigned Layout */}
+            <div className="space-y-6 mb-8">
+              {/* Prescription and OTC Medications - Side by Side */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Prescription Options */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Pill className="w-5 h-5 text-[#C1121F]" />
+                      Prescription Options
+                    </CardTitle>
+                    <CardDescription>Medications that may require a prescription</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {analysis?.prescriptions && analysis.prescriptions.length > 0 ? (
+                        analysis.prescriptions.map((med, index) => (
+                          <div key={index} className="flex items-center gap-2 p-2 bg-red-50 rounded-lg">
+                            <Pill className="w-4 h-4 text-red-600" />
+                            <span className="text-sm">{med}</span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-sm text-gray-500 italic">
+                          Consult with a healthcare provider for prescription options
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
 
-              {/* Home Remedies */}
+                {/* Over-the-Counter Medications */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Pill className="w-5 h-5 text-[#C1121F]" />
+                      Over-the-Counter
+                    </CardTitle>
+                    <CardDescription>Available without prescription</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {analysis?.otc_medications.map((med, index) => (
+                        <div key={index} className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+                          <Pill className="w-4 h-4 text-blue-600" />
+                          <span className="text-sm">{med}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Home Remedies - Full Width */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Home className="w-5 h-5 text-[#C1121F]" />
                     Home Remedies
                   </CardTitle>
-                  <CardDescription>Natural treatment options</CardDescription>
+                  <CardDescription>Natural treatment options you can try at home</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {analysis?.home_remedies.map((remedy, index) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-green-50 rounded-lg">
-                        <Home className="w-4 h-4 text-green-600" />
+                      <div key={index} className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
+                        <Home className="w-4 h-4 text-green-600 flex-shrink-0" />
                         <span className="text-sm">{remedy}</span>
                       </div>
                     ))}
@@ -600,20 +631,63 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                 </CardContent>
               </Card>
 
-              {/* Questions to Ask Doctor */}
+              {/* Expected Duration and Treatment Cost - Side by Side */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Expected Duration */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-[#C1121F]" />
+                      Expected Duration
+                    </CardTitle>
+                    <CardDescription>Typical recovery timeline</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                      <Calendar className="w-6 h-6 text-blue-600" />
+                      <div>
+                        <p className="font-medium text-gray-900">{analysis?.timeline}</p>
+                        <p className="text-sm text-gray-600">Recovery time may vary based on individual factors</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Estimated Treatment Cost */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-[#C1121F]" />
+                      Estimated Treatment Cost
+                    </CardTitle>
+                    <CardDescription>Approximate expenses for treatment</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                      <DollarSign className="w-6 h-6 text-green-600" />
+                      <div>
+                        <p className="font-medium text-gray-900">{analysis?.cost}</p>
+                        <p className="text-sm text-gray-600">Costs may vary by location and insurance coverage</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Additional Questions - Standalone */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <HelpCircle className="w-5 h-5 text-[#C1121F]" />
-                    Questions for Doctor
+                    Additional Questions for Your Doctor
                   </CardTitle>
-                  <CardDescription>Important questions to discuss</CardDescription>
+                  <CardDescription>Important questions to discuss during your medical consultation</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {analysis?.questions.map((question, index) => (
-                      <div key={index} className="flex items-start gap-2 p-2 bg-blue-50 rounded-lg">
-                        <HelpCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                        <HelpCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <span className="text-sm">{question}</span>
                       </div>
                     ))}
