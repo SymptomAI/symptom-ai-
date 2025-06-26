@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -27,6 +29,7 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
+  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -54,6 +57,8 @@ export default function ResultsPage() {
   const [userSymptoms, setUserSymptoms] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [recentChats, setRecentChats] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showDisclaimer, setShowDisclaimer] = useState(true)
 
   useEffect(() => {
     // Load recent chats from localStorage
@@ -188,6 +193,28 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
     a.download = "symptom-analysis.txt"
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleNewSearch = async () => {
+    if (!searchQuery.trim()) return
+
+    // Save to search history
+    const currentHistory = JSON.parse(localStorage.getItem("searchHistory") || "[]")
+    const updatedHistory = [searchQuery, ...currentHistory.filter((item) => item !== searchQuery)].slice(0, 10)
+    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory))
+
+    // Trigger custom event for sidebar update
+    window.dispatchEvent(new CustomEvent("searchHistoryUpdated"))
+
+    // Store the search query and navigate to analyze
+    sessionStorage.setItem("userSymptoms", searchQuery)
+    router.push("/")
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleNewSearch()
+    }
   }
 
   if (isLoading) {
@@ -361,9 +388,31 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-blue-800">
-                  <strong>Your symptoms:</strong> "{userSymptoms}"
-                </p>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <label className="block text-blue-800 font-medium text-sm mb-2">
+                      Previous symptoms: "{userSymptoms}"
+                    </label>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Describe new symptoms for another analysis..."
+                        className="pl-10 bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleNewSearch}
+                    disabled={!searchQuery.trim()}
+                    className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Analyze
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -543,37 +592,47 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
             </div>
 
             {/* Medical Disclaimer */}
-            <Card className="border-amber-200 bg-amber-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-amber-800">
-                  <AlertTriangle className="w-5 h-5" />
-                  Important Medical Disclaimer
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-amber-700 text-sm leading-relaxed mb-4">
-                  This AI-powered analysis is for informational purposes only and should not be considered as
-                  professional medical advice, diagnosis, or treatment. The suggestions provided are based on general
-                  medical knowledge and should not replace consultation with qualified healthcare professionals.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button
-                    onClick={() => window.open("tel:911", "_blank")}
-                    className="bg-red-600 hover:bg-red-700 text-white"
-                  >
-                    Emergency: Call 911
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
-                    className="border-amber-300 text-amber-700 hover:bg-amber-100"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Find Local Doctors
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {showDisclaimer && (
+              <Card className="border-amber-200 bg-amber-50 relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDisclaimer(false)}
+                  className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-amber-100"
+                >
+                  <X className="w-4 h-4 text-amber-600" />
+                </Button>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-amber-800">
+                    <AlertTriangle className="w-5 h-5" />
+                    Important Medical Disclaimer
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-amber-700 text-sm leading-relaxed mb-4">
+                    This AI-powered analysis is for informational purposes only and should not be considered as
+                    professional medical advice, diagnosis, or treatment. The suggestions provided are based on general
+                    medical knowledge and should not replace consultation with qualified healthcare professionals.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      onClick={() => window.open("tel:911", "_blank")}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Emergency: Call 911
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
+                      className="border-amber-300 text-amber-700 hover:bg-amber-100"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Find Local Doctors
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
