@@ -443,14 +443,14 @@ export default function HomePage() {
             </div>
 
             {/* Quick Select Common Symptoms */}
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-gray-900 mb-3">Quick Select Common Symptoms:</h2>
+            <div className="mb-8">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Select Common Symptoms:</h2>
               <div className="flex flex-wrap gap-2">
                 {commonSymptoms.map((symptom, index) => (
                   <button
                     key={index}
                     onClick={() => setSymptoms(symptom)}
-                    className="px-6 py-3 border-2 border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors font-medium"
+                    className="px-4 py-2 border-2 border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors font-medium text-sm"
                   >
                     {symptom}
                   </button>
