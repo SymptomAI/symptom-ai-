@@ -30,6 +30,7 @@ import {
   TrendingUp,
   CheckCircle,
   X,
+  Navigation,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -432,93 +433,127 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
               </Button>
             </div>
 
-            {/* Results Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-              {/* Possible Conditions */}
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Heart className="w-5 h-5 text-[#C1121F]" />
-                      Possible Conditions
-                    </CardTitle>
-                    <CardDescription>Based on the symptoms you described</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {analysis?.conditions.map((condition, index) => (
-                      <div key={index} className="border rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900">{condition.name}</h3>
-                          <div className="flex items-center gap-2">
-                            <Badge
-                              variant={
-                                condition.severity === "high"
-                                  ? "destructive"
-                                  : condition.severity === "medium"
-                                    ? "default"
-                                    : "secondary"
-                              }
-                            >
-                              {condition.severity}
-                            </Badge>
-                            <span className="text-sm font-medium text-[#C1121F]">{condition.probability}</span>
+            {/* Possible Conditions - Standalone Section */}
+            <div className="mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-[#C1121F]" />
+                    Possible Conditions
+                  </CardTitle>
+                  <CardDescription>Based on the symptoms you described</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {analysis?.conditions.map((condition, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900">{condition.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant={
+                              condition.severity === "high"
+                                ? "destructive"
+                                : condition.severity === "medium"
+                                  ? "default"
+                                  : "secondary"
+                            }
+                          >
+                            {condition.severity}
+                          </Badge>
+                          <span className="text-sm font-medium text-[#C1121F]">{condition.probability}</span>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 text-sm">{condition.description}</p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Find Healthcare and Location - Standalone Section */}
+            <div className="mb-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[#C1121F]" />
+                    Find Healthcare & Location
+                  </CardTitle>
+                  <CardDescription>Nearby medical facilities and services</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Map Section */}
+                    <div className="space-y-4">
+                      <div className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                        <iframe
+                          src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3024.1234567890123!2d-74.0059413!3d40.7127753!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1shospital%20near%20me!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          allowFullScreen
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Nearby Hospitals and Medical Facilities"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Navigation className="w-4 h-4" />
+                        <span>Showing hospitals and clinics within 5 miles</span>
+                      </div>
+                    </div>
+
+                    {/* Healthcare Options */}
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 gap-3">
+                        <Button className="w-full bg-[#C1121F] hover:bg-[#9e0e19] text-white justify-start h-12">
+                          <MapPin className="w-5 h-5 mr-3" />
+                          <div className="text-left">
+                            <div className="font-medium">Find Nearby Doctors</div>
+                            <div className="text-xs opacity-90">Primary care & specialists</div>
+                          </div>
+                        </Button>
+
+                        <Button variant="outline" className="w-full justify-start h-12">
+                          <Phone className="w-5 h-5 mr-3" />
+                          <div className="text-left">
+                            <div className="font-medium">Telemedicine</div>
+                            <div className="text-xs text-gray-500">Virtual consultations available</div>
+                          </div>
+                        </Button>
+
+                        <Button variant="outline" className="w-full justify-start h-12">
+                          <Calendar className="w-5 h-5 mr-3" />
+                          <div className="text-left">
+                            <div className="font-medium">Book Appointment</div>
+                            <div className="text-xs text-gray-500">Schedule with local providers</div>
+                          </div>
+                        </Button>
+                      </div>
+
+                      {/* Timeline & Cost Info */}
+                      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                        <h4 className="font-medium text-gray-900">Treatment Information</h4>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3">
+                            <Clock className="w-4 h-4 text-gray-500" />
+                            <div>
+                              <p className="text-sm font-medium">Recovery Time</p>
+                              <p className="text-xs text-gray-600">{analysis?.timeline}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <DollarSign className="w-4 h-4 text-gray-500" />
+                            <div>
+                              <p className="text-sm font-medium">Estimated Cost</p>
+                              <p className="text-xs text-gray-600">{analysis?.cost}</p>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-gray-600 text-sm">{condition.description}</p>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="space-y-6">
-                {/* Timeline & Cost */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-[#C1121F]" />
-                      Timeline & Cost
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium">Recovery Time</p>
-                        <p className="text-xs text-gray-600">{analysis?.timeline}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium">Estimated Cost</p>
-                        <p className="text-xs text-gray-600">{analysis?.cost}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Find Healthcare */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-[#C1121F]" />
-                      Find Healthcare
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button className="w-full bg-[#C1121F] hover:bg-[#9e0e19] text-white">
-                      <MapPin className="w-4 h-4 mr-2" />
-                      Find Nearby Doctors
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <Phone className="w-4 h-4 mr-2" />
-                      Telemedicine
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Treatment Information */}
