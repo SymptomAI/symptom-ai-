@@ -21,9 +21,6 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
-  Key,
-  XCircle,
-  AlertCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -89,9 +86,6 @@ export default function SettingsPage() {
   })
 
   const [isSaving, setIsSaving] = useState(false)
-  const [apiKey, setApiKey] = useState("")
-  const [apiKeyStatus, setApiKeyStatus] = useState<"idle" | "testing" | "valid" | "invalid">("idle")
-  const [apiKeyMessage, setApiKeyMessage] = useState("")
 
   useEffect(() => {
     // Load recent chats from localStorage
@@ -137,16 +131,6 @@ export default function SettingsPage() {
     return () => {
       window.removeEventListener("storage", handleStorageChange)
       window.removeEventListener("searchHistoryUpdated", handleCustomUpdate)
-    }
-  }, [])
-
-  useEffect(() => {
-    // Load saved API key
-    const savedApiKey = localStorage.getItem("openai_api_key")
-    if (savedApiKey) {
-      setApiKey(savedApiKey)
-      setApiKeyStatus("valid")
-      setApiKeyMessage("API key loaded from storage")
     }
   }, [])
 
@@ -221,63 +205,10 @@ export default function SettingsPage() {
     }
   }
 
-  const testApiKey = async () => {
-    if (!apiKey.trim()) {
-      setApiKeyStatus("invalid")
-      setApiKeyMessage("Please enter an API key")
-      return
-    }
-
-    setApiKeyStatus("testing")
-    setApiKeyMessage("Testing API key...")
-
-    try {
-      const response = await fetch("/api/test-api-key", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ apiKey: apiKey.trim() }),
-      })
-
-      const result = await response.json()
-
-      if (result.valid) {
-        setApiKeyStatus("valid")
-        setApiKeyMessage("API key is valid and working!")
-        // Save the API key to localStorage for the session
-        localStorage.setItem("openai_api_key", apiKey.trim())
-      } else {
-        setApiKeyStatus("invalid")
-        setApiKeyMessage(result.error || "Invalid API key")
-      }
-    } catch (error) {
-      setApiKeyStatus("invalid")
-      setApiKeyMessage("Failed to test API key. Please try again.")
-    }
-  }
-
-  const saveApiKey = () => {
-    if (apiKeyStatus === "valid") {
-      localStorage.setItem("openai_api_key", apiKey.trim())
-      alert("API key saved successfully!")
-    } else {
-      alert("Please test and validate the API key first.")
-    }
-  }
-
-  const clearApiKey = () => {
-    setApiKey("")
-    setApiKeyStatus("idle")
-    setApiKeyMessage("")
-    localStorage.removeItem("openai_api_key")
-    alert("API key cleared successfully!")
-  }
-
   return (
     <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -652,109 +583,6 @@ export default function SettingsPage() {
                       <Trash2 className="w-4 h-4" />
                       Delete All Data
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* API Configuration */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Key className="w-5 h-5" />
-                    OpenAI API Configuration
-                  </CardTitle>
-                  <CardDescription>Configure and test your OpenAI API key for AI-powered analysis</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="api-key">OpenAI API Key</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="api-key"
-                        type="password"
-                        placeholder="sk-proj-..."
-                        value={apiKey}
-                        onChange={(e) => {
-                          setApiKey(e.target.value)
-                          setApiKeyStatus("idle")
-                          setApiKeyMessage("")
-                        }}
-                        className="flex-1"
-                      />
-                      <Button
-                        onClick={testApiKey}
-                        disabled={apiKeyStatus === "testing"}
-                        variant="outline"
-                        className="min-w-[100px]"
-                      >
-                        {apiKeyStatus === "testing" ? (
-                          <>
-                            <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-gray-400 border-t-transparent" />
-                            Testing...
-                          </>
-                        ) : (
-                          "Test Key"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* API Key Status */}
-                  {apiKeyMessage && (
-                    <div
-                      className={`flex items-center gap-2 p-3 rounded-lg ${
-                        apiKeyStatus === "valid"
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : apiKeyStatus === "invalid"
-                            ? "bg-red-50 text-red-700 border border-red-200"
-                            : "bg-blue-50 text-blue-700 border border-blue-200"
-                      }`}
-                    >
-                      {apiKeyStatus === "valid" && <CheckCircle className="w-4 h-4" />}
-                      {apiKeyStatus === "invalid" && <XCircle className="w-4 h-4" />}
-                      {apiKeyStatus === "testing" && <AlertCircle className="w-4 h-4" />}
-                      <span className="text-sm">{apiKeyMessage}</span>
-                    </div>
-                  )}
-
-                  {/* API Key Actions */}
-                  <div className="flex flex-wrap gap-3">
-                    <Button
-                      onClick={saveApiKey}
-                      disabled={apiKeyStatus !== "valid"}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white"
-                    >
-                      Save API Key
-                    </Button>
-                    <Button onClick={clearApiKey} variant="outline" className="text-gray-600 hover:text-gray-800">
-                      Clear API Key
-                    </Button>
-                  </div>
-
-                  {/* API Key Info */}
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h4 className="font-medium text-gray-900 mb-2">How to get your OpenAI API Key:</h4>
-                    <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                      <li>
-                        Visit{" "}
-                        <a
-                          href="https://platform.openai.com/api-keys"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[#C1121F] hover:underline"
-                        >
-                          OpenAI API Keys page
-                        </a>
-                      </li>
-                      <li>Sign in to your OpenAI account</li>
-                      <li>Click "Create new secret key"</li>
-                      <li>Copy the key and paste it above</li>
-                      <li>Test the key to ensure it's working</li>
-                    </ol>
-                    <p className="text-xs text-gray-500 mt-3">
-                      <strong>Security Note:</strong> Your API key is stored locally in your browser and never sent to
-                      our servers except for validation.
-                    </p>
                   </div>
                 </CardContent>
               </Card>

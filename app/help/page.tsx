@@ -24,6 +24,7 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
+  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -39,6 +40,7 @@ interface FAQItem {
 export default function HelpPage() {
   const router = useRouter()
   const [recentChats, setRecentChats] = useState<string[]>([])
+  const [showEmergencyWarning, setShowEmergencyWarning] = useState(true)
 
   useEffect(() => {
     // Load recent chats from localStorage
@@ -219,7 +221,7 @@ export default function HelpPage() {
   return (
     <div className="flex h-screen bg-[#FCFCFC]">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -386,10 +388,10 @@ export default function HelpPage() {
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center text-white">
+                        <div className="w-12 h-12 bg-[#C1121F] rounded-full flex items-center justify-center text-white flex-shrink-0">
                           {method.icon}
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <CardTitle className="text-base">{method.title}</CardTitle>
                           <CardDescription className="text-sm">{method.description}</CardDescription>
                         </div>
@@ -488,37 +490,46 @@ export default function HelpPage() {
             </div>
 
             {/* Emergency Notice */}
-            <Card className="border-red-200 bg-red-50">
-              <CardHeader className="py-2">
-                <div className="flex items-center gap-3">
-                  <AlertTriangle className="w-6 h-6 text-red-600" />
-                  <div>
-                    <CardTitle className="text-red-900">Medical Emergency</CardTitle>
-                    <CardDescription className="text-red-700">
-                      If you're experiencing a medical emergency, call 911 immediately or go to your nearest emergency
-                      room.
-                    </CardDescription>
+            {showEmergencyWarning && (
+              <Card className="border-yellow-200 bg-yellow-50 relative">
+                <button
+                  onClick={() => setShowEmergencyWarning(false)}
+                  className="absolute top-4 right-4 text-yellow-600 hover:text-yellow-800 transition-colors"
+                  aria-label="Dismiss warning"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <CardHeader className="py-4 pr-12">
+                  <div className="flex items-center gap-3">
+                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
+                    <div>
+                      <CardTitle className="text-yellow-900">Medical Emergency</CardTitle>
+                      <CardDescription className="text-yellow-700">
+                        If you're experiencing a medical emergency, call 911 immediately or go to your nearest emergency
+                        room.
+                      </CardDescription>
+                    </div>
                   </div>
-                </div>
-              </CardHeader>
-              <CardContent className="py-2">
-                <div className="flex gap-4">
-                  <Button
-                    onClick={() => window.open("tel:911", "_blank")}
-                    className="bg-red-600 hover:bg-red-700 text-white"
-                  >
-                    Call 911
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => window.open("https://www.google.com/maps/search/emergency+room+near+me", "_blank")}
-                    className="border-red-300 text-red-700 hover:bg-red-50"
-                  >
-                    Find Emergency Room
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent className="py-2">
+                  <div className="flex gap-4">
+                    <Button
+                      onClick={() => window.open("tel:911", "_blank")}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Call 911
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open("https://www.google.com/maps/search/emergency+room+near+me", "_blank")}
+                      className="border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                    >
+                      Find Emergency Room
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

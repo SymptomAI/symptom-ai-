@@ -221,12 +221,23 @@ export default function HomePage() {
     }
   }
 
-  const commonSymptoms = ["Headache", "Chest Pain", "Shortness of Breath", "Abdominal Pain", "Fever", "Fatigue"]
+  const commonSymptoms = [
+    "Headache",
+    "Chest Pain",
+    "Shortness of Breath",
+    "Abdominal Pain",
+    "Fever",
+    "Fatigue",
+    "Nausea",
+    "Dizziness",
+    "Sore Throat",
+    "Cough",
+  ]
 
   return (
     <div className="flex h-screen bg-[#FCFCFC] overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -345,9 +356,7 @@ export default function HomePage() {
         {/* Header */}
         <div className="px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <img src="/symptom-ai-header-logo.png" alt="Symptom AI" className="h-8" />
-            </div>
+            <div className="flex items-center gap-4"></div>
 
             {/* User Profile */}
             <div
@@ -366,26 +375,20 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 overflow-auto">
-          <div className="max-w-6xl mx-auto px-8 py-6">
+        <div className="flex-1 flex flex-col">
+          <div className="max-w-6xl mx-auto px-8 py-3 flex-1 flex flex-col">
             {/* Welcome Message */}
-            <div className="mb-8">
-              <div className="bg-gradient-to-r from-[#C1121F] to-[#8B0000] rounded-2xl p-8 text-white">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-4">Welcome to Symptom AI</h1>
-                <p className="text-xl opacity-90 mb-2">
-                  Get instant AI-powered analysis of your symptoms and personalized health recommendations.
-                </p>
-                <p className="text-sm opacity-75">
-                  Describe your symptoms below and receive comprehensive medical insights powered by advanced AI
-                  technology.
-                </p>
+            <div className="mb-4">
+              <div className="px-4 text-center">
+                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-[#C1121F]">Hello Matthew 👋</h1>
+                <p className="text-2xl lg:text-3xl text-black">How are you feeling today?</p>
               </div>
             </div>
 
             {/* Main Input Section */}
-            <div className="mb-8">
+            <div className="mb-4">
               <Card className="border-2 border-[#DDDDDD] shadow-lg">
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
                     Describe Your Symptoms
@@ -394,12 +397,12 @@ export default function HomePage() {
                     Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3">
                   <Textarea
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[120px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[100px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
@@ -441,13 +444,13 @@ export default function HomePage() {
 
             {/* Quick Select Common Symptoms */}
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Select Common Symptoms:</h2>
-              <div className="flex flex-wrap gap-3">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Select Common Symptoms:</h2>
+              <div className="flex flex-wrap gap-2">
                 {commonSymptoms.map((symptom, index) => (
                   <button
                     key={index}
                     onClick={() => setSymptoms(symptom)}
-                    className="px-6 py-3 border-2 border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors font-medium"
+                    className="px-4 py-2 border-2 border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors font-medium text-sm"
                   >
                     {symptom}
                   </button>

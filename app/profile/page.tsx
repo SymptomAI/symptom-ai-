@@ -153,9 +153,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="flex h-screen bg-[#FCFCFC]">
+    <div className="flex h-screen bg-[#FCFCFC] relative">
       {/* Left Sidebar */}
-      <div className="w-80 bg-white flex flex-col h-full shadow-lg">
+      <div className="w-69 bg-white flex flex-col h-full shadow-lg">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <div className="flex items-center justify-between mb-4">
@@ -273,9 +273,9 @@ export default function ProfilePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col pb-16">
         {/* Header */}
-        <div className="px-8 py-4">
+        <div className="px-6 py-2">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <Button
@@ -305,24 +305,24 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Content */}
-        <div className="flex-1 overflow-auto px-8 py-4">
+        <div className="flex-1 overflow-auto px-6 py-2">
           <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
+            <div className="mb-4">
               <h1 className="text-3xl font-semibold text-gray-900 mb-2">Profile Settings</h1>
               <p className="text-gray-600">Manage your personal information and medical details</p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Personal Information - Full Width */}
               <Card>
-                <CardHeader>
+                <CardHeader className="p-4">
                   <CardTitle className="flex items-center gap-2">
                     <User className="w-5 h-5" />
                     Personal Information
                   </CardTitle>
                   <CardDescription>Your basic personal details</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-4 pt-0 space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="firstName">First Name</Label>
@@ -383,14 +383,14 @@ export default function ProfilePage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Location Information */}
                 <Card>
-                  <CardHeader>
+                  <CardHeader className="p-4">
                     <CardTitle className="flex items-center gap-2">
                       <MapPin className="w-5 h-5" />
                       Location Information
                     </CardTitle>
                     <CardDescription>Your address for location-based medical services</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="p-4 pt-0 space-y-3">
                     <div>
                       <Label htmlFor="address">Street Address</Label>
                       <Input
@@ -438,14 +438,14 @@ export default function ProfilePage() {
 
                 {/* Emergency Contact */}
                 <Card>
-                  <CardHeader>
+                  <CardHeader className="p-4">
                     <CardTitle className="flex items-center gap-2">
                       <Phone className="w-5 h-5" />
                       Emergency Contact
                     </CardTitle>
                     <CardDescription>Emergency contact information for medical situations</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="p-4 pt-0 space-y-3">
                     <div>
                       <Label htmlFor="emergencyContact">Emergency Contact Name</Label>
                       <Input
@@ -473,21 +473,21 @@ export default function ProfilePage() {
 
               {/* Medical Information - Full Width */}
               <Card>
-                <CardHeader>
+                <CardHeader className="p-4">
                   <CardTitle className="flex items-center gap-2">
                     <Heart className="w-5 h-5" />
                     Medical Information
                   </CardTitle>
                   <CardDescription>Your medical history and current health information</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="p-4 pt-0 space-y-3">
                   <div>
                     <Label htmlFor="medicalConditions">Current Medical Conditions</Label>
                     <textarea
                       id="medicalConditions"
                       value={profile.medicalConditions}
                       onChange={(e) => handleInputChange("medicalConditions", e.target.value)}
-                      className="mt-1 w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                      className="mt-1 w-full min-h-[60px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                       placeholder="List any current medical conditions, chronic illnesses, or ongoing health issues..."
                     />
                   </div>
@@ -497,7 +497,7 @@ export default function ProfilePage() {
                       id="allergies"
                       value={profile.allergies}
                       onChange={(e) => handleInputChange("allergies", e.target.value)}
-                      className="mt-1 w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                      className="mt-1 w-full min-h-[60px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                       placeholder="List any known allergies (medications, foods, environmental, etc.)..."
                     />
                   </div>
@@ -507,7 +507,7 @@ export default function ProfilePage() {
                       id="medications"
                       value={profile.medications}
                       onChange={(e) => handleInputChange("medications", e.target.value)}
-                      className="mt-1 w-full min-h-[80px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                      className="mt-1 w-full min-h-[60px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                       placeholder="List all current medications, supplements, and dosages..."
                     />
                   </div>
@@ -517,22 +517,25 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-      {/* Save Button */}
-      <div className="mt-8 flex justify-center">
-        <Button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-3 rounded-lg font-semibold"
-        >
-          {isSaving ? (
-            <>
-              <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              Saving...
-            </>
-          ) : (
-            "Save Profile"
-          )}
-        </Button>
+
+      {/* Save Button - Fixed at bottom */}
+      <div className="fixed bottom-0 left-69 right-0 border-t border-gray-200 bg-white px-8 py-3 shadow-lg">
+        <div className="max-w-4xl mx-auto flex justify-center">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-3 rounded-lg font-semibold"
+          >
+            {isSaving ? (
+              <>
+                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Saving...
+              </>
+            ) : (
+              "Save Profile"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   )
