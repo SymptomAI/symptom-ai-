@@ -17,11 +17,20 @@ import {
   TrendingUp,
   CheckCircle,
   Stethoscope,
+  Shield,
+  Brain,
+  Activity,
+  AlertCircle,
+  Star,
+  ChevronRight,
+  Zap,
+  Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 export default function HomePage() {
   const router = useRouter()
@@ -222,16 +231,54 @@ export default function HomePage() {
   }
 
   const commonSymptoms = [
-    "Headache",
+    "Headache & Migraine",
     "Chest Pain",
     "Shortness of Breath",
     "Abdominal Pain",
-    "Fever",
-    "Fatigue",
-    "Nausea",
+    "Fever & Chills",
+    "Fatigue & Weakness",
+    "Nausea & Vomiting",
     "Dizziness",
     "Sore Throat",
-    "Cough",
+    "Persistent Cough",
+  ]
+
+  const quickPrompts = [
+    "I have a headache that's been getting worse over the past 3 days",
+    "Experiencing chest tightness and difficulty breathing",
+    "Sudden onset of severe abdominal pain",
+    "High fever with body aches and fatigue",
+  ]
+
+  const features = [
+    {
+      icon: Brain,
+      title: "AI-Powered Analysis",
+      description: "Advanced machine learning algorithms analyze your symptoms with medical precision",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      icon: Shield,
+      title: "Privacy Protected",
+      description: "Your health data is encrypted and never shared with third parties",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      icon: Stethoscope,
+      title: "Medical Grade",
+      description: "Developed with input from certified medical professionals and specialists",
+      color: "text-[#C1121F]",
+      bgColor: "bg-red-50",
+    },
+    {
+      icon: Zap,
+      title: "Instant Results",
+      description: "Get comprehensive health insights and recommendations in seconds",
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+    },
   ]
 
   return (
@@ -254,13 +301,13 @@ export default function HomePage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Search chat"
+              placeholder="Search conversations..."
               className="pl-10 bg-gray-50 border-gray-200 rounded-lg text-sm h-9 focus:ring-2 focus:ring-[#C1121F]/20"
             />
           </div>
         </div>
 
-        {/* Stats */}
+        {/* Trust Indicators */}
         <div className="p-4 border-b border-gray-100">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -283,6 +330,13 @@ export default function HomePage() {
                 <span className="text-gray-600 text-xs">Accuracy Rate</span>
               </div>
               <span className="font-bold text-gray-900 text-sm">96.8%</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4 text-[#C1121F]" />
+                <span className="text-gray-600 text-xs">Countries Served</span>
+              </div>
+              <span className="font-bold text-gray-900 text-sm">50+</span>
             </div>
           </div>
         </div>
@@ -354,9 +408,14 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="px-8 py-4">
+        <div className="px-8 py-4 border-b border-gray-100">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4"></div>
+            <div className="flex items-center gap-4">
+              <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
+                <Activity className="w-3 h-3 mr-1" />
+                System Healthy
+              </Badge>
+            </div>
 
             {/* User Profile */}
             <div
@@ -375,34 +434,59 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          <div className="max-w-6xl mx-auto px-8 py-3 flex-1 flex flex-col">
-            {/* Welcome Message */}
-            <div className="mb-4">
-              <div className="px-4 text-center">
-                <h1 className="text-3xl lg:text-4xl font-bold mb-2 text-[#C1121F]">Hello Matthew 👋</h1>
-                <p className="text-2xl lg:text-3xl text-black">How are you feeling today?</p>
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-6xl mx-auto px-8 py-6">
+            {/* Welcome Section */}
+            <div className="text-center mb-8">
+              <div className="mb-4">
+                <h1 className="text-4xl lg:text-5xl font-bold mb-3">
+                  <span className="text-gray-900">Good Morning, </span>
+                  <span className="text-[#C1121F]">Matthew</span>
+                  <span className="ml-2">👋</span>
+                </h1>
+                <p className="text-xl lg:text-2xl text-gray-600 mb-2">How can I assist you with your health today?</p>
+                <p className="text-gray-500 max-w-2xl mx-auto">
+                  Describe your symptoms and get instant AI-powered medical insights, treatment recommendations, and
+                  guidance from our advanced health analysis system.
+                </p>
+              </div>
+
+              {/* Trust Badges */}
+              <div className="flex justify-center items-center gap-6 mb-8">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  <span className="font-medium">4.9/5 Rating</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Shield className="w-4 h-4 text-green-500" />
+                  <span className="font-medium">HIPAA Compliant</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="w-4 h-4 text-blue-500" />
+                  <span className="font-medium">FDA Recognized</span>
+                </div>
               </div>
             </div>
 
             {/* Main Input Section */}
-            <div className="mb-4">
+            <div className="mb-8">
               <Card className="border-2 border-[#DDDDDD] shadow-lg">
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-4">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
                     Describe Your Symptoms
                   </CardTitle>
-                  <CardDescription>
-                    Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
+                  <CardDescription className="text-base">
+                    Be as detailed as possible. Include when symptoms started, severity, location, and any relevant
+                    context for the most accurate analysis.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-4">
                   <Textarea
-                    placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
+                    placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever (99.5°F) and fatigue. The headache is worse in the morning and I feel nauseous. I also have some sensitivity to light..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[100px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[120px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
@@ -410,12 +494,16 @@ export default function HomePage() {
                         onClick={handleVoiceInput}
                         variant="outline"
                         size="sm"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
                       >
                         <Mic className="w-4 h-4" />
                         Voice Input
                       </Button>
-                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
+                      >
                         <MapPin className="w-4 h-4" />
                         Use Location
                       </Button>
@@ -423,7 +511,7 @@ export default function HomePage() {
                     <Button
                       onClick={handleAnalyze}
                       disabled={isAnalyzing || !symptoms.trim()}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 font-semibold"
+                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 font-semibold text-base"
                     >
                       {isAnalyzing ? (
                         <>
@@ -442,10 +530,51 @@ export default function HomePage() {
               </Card>
             </div>
 
-            {/* Quick Select Common Symptoms */}
+            {/* Quick Prompts */}
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Quick Select Common Symptoms:</h2>
-              <div className="flex flex-wrap gap-2">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Start Prompts:</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {quickPrompts.map((prompt, index) => (
+                  <Card
+                    key={index}
+                    className="cursor-pointer hover:shadow-md transition-shadow border-gray-200 hover:border-[#C1121F]/30"
+                    onClick={() => setSymptoms(prompt)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-700 flex-1">{prompt}</p>
+                        <ChevronRight className="w-4 h-4 text-gray-400 ml-2 flex-shrink-0" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Features Grid */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Why Choose Symptom AI?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {features.map((feature, index) => (
+                  <Card key={index} className="border-gray-200 hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6 text-center">
+                      <div
+                        className={`w-12 h-12 ${feature.bgColor} rounded-lg flex items-center justify-center mx-auto mb-4`}
+                      >
+                        <feature.icon className={`w-6 h-6 ${feature.color}`} />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                      <p className="text-sm text-gray-600">{feature.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Common Symptoms */}
+            <div className="mb-8">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Common Symptoms & Conditions:</h2>
+              <div className="flex flex-wrap gap-3">
                 {commonSymptoms.map((symptom, index) => (
                   <button
                     key={index}
@@ -457,6 +586,23 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
+
+            {/* Important Notice */}
+            <Card className="border-amber-200 bg-amber-50">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-amber-800 mb-1">Important Medical Disclaimer</h3>
+                    <p className="text-sm text-amber-700">
+                      This AI tool provides general health information and should not replace professional medical
+                      advice. For emergencies, call 911. Always consult with healthcare professionals for serious
+                      symptoms or ongoing health concerns.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
