@@ -386,9 +386,9 @@ export default function HomePage() {
             </div>
 
             {/* Main Input Section */}
-            <div className="mb-4 flex-1">
-              <Card className="border-2 border-[#DDDDDD] shadow-lg h-full">
-                <CardHeader>
+            <div className="mb-4">
+              <Card className="border-2 border-[#DDDDDD] shadow-lg">
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
                     Describe Your Symptoms
@@ -397,12 +397,12 @@ export default function HomePage() {
                     Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 flex flex-col h-full">
+                <CardContent className="space-y-3">
                   <Textarea
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever and fatigue. The headache is worse in the morning and I feel nauseous..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="flex-1 text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[100px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
