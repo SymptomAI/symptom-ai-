@@ -387,9 +387,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
           <div className="max-w-7xl mx-auto">
             {/* Analysis Header */}
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
               <div className="space-y-4">
-                <p className="text-gray-900 font-medium">Previous symptoms: "{userSymptoms}"</p>
                 <div className="flex items-center gap-3">
                   <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -632,68 +630,8 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
               </Card>
 
               {/* Expected Duration and Treatment Cost - Side by Side */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Expected Duration */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-[#C1121F]" />
-                      Expected Duration
-                    </CardTitle>
-                    <CardDescription>Typical recovery timeline</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
-                      <Calendar className="w-6 h-6 text-blue-600" />
-                      <div>
-                        <p className="font-medium text-gray-900">{analysis?.timeline}</p>
-                        <p className="text-sm text-gray-600">Recovery time may vary based on individual factors</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Estimated Treatment Cost */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-[#C1121F]" />
-                      Estimated Treatment Cost
-                    </CardTitle>
-                    <CardDescription>Approximate expenses for treatment</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
-                      <DollarSign className="w-6 h-6 text-green-600" />
-                      <div>
-                        <p className="font-medium text-gray-900">{analysis?.cost}</p>
-                        <p className="text-sm text-gray-600">Costs may vary by location and insurance coverage</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
 
               {/* Additional Questions - Standalone */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <HelpCircle className="w-5 h-5 text-[#C1121F]" />
-                    Additional Questions for Your Doctor
-                  </CardTitle>
-                  <CardDescription>Important questions to discuss during your medical consultation</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {analysis?.questions.map((question, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
-                        <HelpCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm">{question}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Medical Disclaimer */}
