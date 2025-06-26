@@ -387,22 +387,18 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
             {/* Analysis Header */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-4">Analysis Complete</h1>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="space-y-4">
+                <p className="text-gray-900 font-medium">Previous symptoms: "{userSymptoms}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <label className="block text-blue-800 font-medium text-sm mb-2">
-                      Previous symptoms: "{userSymptoms}"
-                    </label>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Describe new symptoms for another analysis..."
-                        className="pl-10 bg-white border-blue-300 focus:border-blue-500 focus:ring-blue-500"
-                      />
-                    </div>
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Describe new symptoms for another analysis..."
+                      className="pl-10 border-gray-300 focus:border-[#C1121F] focus:ring-[#C1121F]"
+                    />
                   </div>
                   <Button
                     onClick={handleNewSearch}
