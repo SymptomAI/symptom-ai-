@@ -572,7 +572,11 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-4">
-                    <Button onClick={handleExportData} variant="outline" className="flex items-center gap-2">
+                    <Button
+                      onClick={handleExportData}
+                      variant="outline"
+                      className="flex items-center gap-2 bg-transparent"
+                    >
                       <Download className="w-4 h-4" />
                       Export My Data
                     </Button>

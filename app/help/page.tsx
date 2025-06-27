@@ -16,7 +16,6 @@ import {
   MessageSquare,
   ChevronDown,
   ChevronRight,
-  ExternalLink,
   Shield,
   Heart,
   AlertTriangle,
@@ -24,7 +23,6 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
-  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -466,73 +464,4 @@ export default function HelpPage() {
 
             {/* Quick Links */}
             <div className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Links</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {quickLinks.map((link, index) => (
-                  <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-[#C1121F] rounded-full flex items-center justify-center text-white">
-                            {link.icon}
-                          </div>
-                          <div>
-                            <CardTitle className="text-base">{link.title}</CardTitle>
-                            <CardDescription className="text-sm">{link.description}</CardDescription>
-                          </div>
-                        </div>
-                        <ExternalLink className="w-4 h-4 text-gray-400" />
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {/* Emergency Notice */}
-            {showEmergencyWarning && (
-              <Card className="border-yellow-200 bg-yellow-50 relative">
-                <button
-                  onClick={() => setShowEmergencyWarning(false)}
-                  className="absolute top-4 right-4 text-yellow-600 hover:text-yellow-800 transition-colors"
-                  aria-label="Dismiss warning"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-                <CardHeader className="py-4 pr-12">
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <CardTitle className="text-yellow-900">Medical Emergency</CardTitle>
-                      <CardDescription className="text-yellow-700">
-                        If you're experiencing a medical emergency, call 911 immediately or go to your nearest emergency
-                        room.
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="py-2">
-                  <div className="flex gap-4">
-                    <Button
-                      onClick={() => window.open("tel:911", "_blank")}
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      Call 911
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open("https://www.google.com/maps/search/emergency+room+near+me", "_blank")}
-                      className="border-yellow-300 text-yellow-700 hover:bg-yellow-50"
-                    >
-                      Find Emergency Room
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+              <h2 className="text-xl font-\

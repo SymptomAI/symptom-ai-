@@ -483,7 +483,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                               condition.severity === "high"
                                 ? "destructive"
                                 : condition.severity === "medium"
-                                  ? "default"
+                                  ? "secondary"
                                   : "secondary"
                             }
                           >
@@ -542,7 +542,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                           </div>
                         </Button>
 
-                        <Button variant="outline" className="w-full justify-start h-12">
+                        <Button variant="outline" className="w-full justify-start h-12 bg-transparent">
                           <Phone className="w-5 h-5 mr-3" />
                           <div className="text-left">
                             <div className="font-medium">Telemedicine</div>
@@ -550,7 +550,7 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                           </div>
                         </Button>
 
-                        <Button variant="outline" className="w-full justify-start h-12">
+                        <Button variant="outline" className="w-full justify-start h-12 bg-transparent">
                           <Calendar className="w-5 h-5 mr-3" />
                           <div className="text-left">
                             <div className="font-medium">Book Appointment</div>
