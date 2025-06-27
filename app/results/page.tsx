@@ -20,16 +20,9 @@ import {
   Pill,
   Home,
   Heart,
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  Download,
-  AlertTriangle,
-  ExternalLink,
   Users,
   TrendingUp,
   CheckCircle,
-  X,
   Navigation,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -653,77 +646,4 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
                     {analysis?.home_remedies.map((remedy, index) => (
                       <li key={index} className="flex items-start gap-2 text-gray-900">
                         <span className="text-sm mt-1">•</span>
-                        <span className="text-sm">{remedy}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              {/* Expected Duration and Treatment Cost - Side by Side */}
-
-              {/* Additional Questions - Standalone */}
-            </div>
-
-            {/* Feedback Buttons - Moved to bottom */}
-            <div className="flex justify-start gap-3 mb-8">
-              <Button onClick={() => handleFeedback(true)} variant="outline" size="icon">
-                <ThumbsUp className="w-4 h-4" />
-              </Button>
-              <Button onClick={() => handleFeedback(false)} variant="outline" size="icon">
-                <ThumbsDown className="w-4 h-4" />
-              </Button>
-              <Button onClick={handleShare} variant="outline" size="icon">
-                <Share2 className="w-4 h-4" />
-              </Button>
-              <Button onClick={handleDownload} variant="outline" size="icon">
-                <Download className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Medical Disclaimer */}
-            {showDisclaimer && (
-              <Card className="border-amber-200 bg-amber-50 relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowDisclaimer(false)}
-                  className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-amber-100"
-                >
-                  <X className="w-4 h-4 text-amber-600" />
-                </Button>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-amber-800">
-                    <AlertTriangle className="w-5 h-5" />
-                    Important Medical Disclaimer
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-amber-700 text-sm leading-relaxed mb-4">
-                    This analysis is for informational purposes only and should not replace professional medical advice.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button
-                      onClick={() => window.open("tel:911", "_blank")}
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                    >
-                      Emergency: Call 911
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open("https://www.google.com/maps/search/doctor+near+me", "_blank")}
-                      className="border-amber-300 text-amber-700 hover:bg-amber-100"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Find Local Doctors
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+                        <span className\
