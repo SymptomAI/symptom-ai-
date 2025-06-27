@@ -451,7 +451,7 @@ export default function HomePage() {
             </div>
 
             {/* Emergency Notice */}
-            <div className="mt-3">
+            <div className="mt-3 pt-3">
               <div className="flex justify-end">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <AlertCircle className="w-3 h-3" />
