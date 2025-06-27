@@ -223,24 +223,13 @@ export default function HomePage() {
     }
   }
 
-  const commonSymptoms = [
-    "Headache",
-    "Chest Pain",
-    "Dyspnea",
-    "Abdominal Pain",
-    "Fever",
-    "Fatigue",
-    "Nausea",
-    "Dizziness",
-  ]
+  const commonSymptoms = ["Headache", "Chest Pain", "Dyspnea", "Abdominal Pain", "Fever", "Fatigue"]
 
   const quickPrompts = [
     "I've been experiencing a persistent headache for the past 2 days",
     "Experiencing chest tightness and difficulty breathing",
     "Sudden onset of severe abdominal pain",
     "High fever with body aches and fatigue",
-    "Persistent cough with yellow phlegm and shortness of breath",
-    "Sharp lower back pain that radiates down my leg",
   ]
 
   return (
