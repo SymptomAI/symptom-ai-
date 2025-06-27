@@ -372,7 +372,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto h-full flex flex-col">
             {/* Main Input Section */}
             <div className="mb-3">
-              <Card className="border-2 border-[#DDDDDD] shadow-sm">
+              <Card className="border border-gray-100 shadow-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
@@ -388,7 +388,7 @@ export default function HomePage() {
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever (99.5°F) and fatigue. The headache is worse in the morning and I feel nauseous. I also have some sensitivity to light..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[100px] text-base border-[#DDDDDD] focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[100px] text-base border-gray-100 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
@@ -396,7 +396,7 @@ export default function HomePage() {
                         onClick={handleVoiceInput}
                         variant="outline"
                         size="sm"
-                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
+                        className="flex items-center gap-2 border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700 bg-transparent"
                       >
                         <Mic className="w-4 h-4" />
                         Voice Input
@@ -404,7 +404,7 @@ export default function HomePage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex items-center gap-2 border-[#C1121F] text-[#C1121F] hover:bg-[#C1121F] hover:text-white bg-transparent"
+                        className="flex items-center gap-2 border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700 bg-transparent"
                       >
                         <MapPin className="w-4 h-4" />
                         Use Location
@@ -451,7 +451,7 @@ export default function HomePage() {
             </div>
 
             {/* Emergency Notice */}
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="mt-3">
               <div className="flex justify-end">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <AlertCircle className="w-3 h-3" />
