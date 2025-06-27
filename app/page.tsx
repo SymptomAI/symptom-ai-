@@ -388,7 +388,7 @@ export default function HomePage() {
                     placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever (99.5°F) and fatigue. The headache is worse in the morning and I feel nauseous. I also have some sensitivity to light..."
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[100px] text-base border-gray-100 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none"
+                    className="min-h-[100px] text-base border-gray-100 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-400"
                   />
                   <div className="flex justify-between items-center">
                     <div className="flex gap-3">
@@ -451,7 +451,7 @@ export default function HomePage() {
             </div>
 
             {/* Emergency Notice */}
-            <div className="mt-3 pt-3">
+            <div className="mt-3">
               <div className="flex justify-end">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <AlertCircle className="w-3 h-3" />
