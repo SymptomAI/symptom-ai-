@@ -18,7 +18,6 @@ import {
   CheckCircle,
   Stethoscope,
   AlertCircle,
-  Globe,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -223,8 +222,6 @@ export default function HomePage() {
     }
   }
 
-  const commonSymptoms = ["Headache", "Chest Pain", "Dyspnea", "Abdominal Pain", "Fever", "Fatigue"]
-
   const quickPrompts = [
     "I've been experiencing a persistent headache for the past 2 days",
     "Experiencing chest tightness and difficulty breathing",
@@ -281,13 +278,6 @@ export default function HomePage() {
                 <span className="text-gray-600 text-xs">Accuracy Rate</span>
               </div>
               <span className="font-bold text-gray-900 text-sm">96.8%</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-[#C1121F]" />
-                <span className="text-gray-600 text-xs">Countries Served</span>
-              </div>
-              <span className="font-bold text-gray-900 text-sm">50+</span>
             </div>
           </div>
         </div>
@@ -382,7 +372,7 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto h-full flex flex-col">
             {/* Main Input Section */}
             <div className="mb-3">
-              <Card className="border-2 border-[#DDDDDD] shadow-lg">
+              <Card className="border-2 border-[#DDDDDD] shadow-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Stethoscope className="w-6 h-6 text-[#C1121F]" />
@@ -460,28 +450,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Common Symptoms Footer */}
+            {/* Emergency Notice */}
             <div className="mt-3 pt-3 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Common Symptoms:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {commonSymptoms.map((symptom, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSymptoms(symptom)}
-                        className="px-3 py-1 border border-[#C1121F] text-[#C1121F] rounded-full hover:bg-[#C1121F] hover:text-white transition-colors text-sm"
-                      >
-                        {symptom}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <AlertCircle className="w-3 h-3" />
-                    <span>For emergencies, call 911 immediately</span>
-                  </div>
+              <div className="flex justify-end">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>For emergencies, call 911 immediately</span>
                 </div>
               </div>
             </div>
