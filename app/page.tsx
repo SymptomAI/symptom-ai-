@@ -223,10 +223,10 @@ export default function HomePage() {
   }
 
   const quickPrompts = [
-    "I've been experiencing a persistent headache for the past 2 days",
-    "Experiencing chest tightness and difficulty breathing",
-    "Sudden onset of severe abdominal pain",
-    "High fever with body aches and fatigue",
+    "I have a really bad headache that won't go away and I feel nauseous",
+    "My throat is super sore and I can barely swallow anything",
+    "I've been coughing a lot and feel really tired and achy all over",
+    "My stomach hurts really bad and I keep feeling like I need to throw up",
   ]
 
   return (
