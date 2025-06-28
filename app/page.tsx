@@ -12,7 +12,6 @@ import {
   MessageCircle,
   Send,
   Mic,
-  MapPin,
   Users,
   TrendingUp,
   CheckCircle,
@@ -22,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 
 export default function HomePage() {
   const router = useRouter()
@@ -347,9 +346,9 @@ export default function HomePage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col bg-white">
         {/* Header */}
-        <div className="px-8 py-1 border-b border-gray-100">
+        <div className="px-8 py-4 border-b border-gray-100">
           <div className="flex justify-end items-center">
             {/* User Profile */}
             <div
@@ -367,97 +366,103 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-3">
-          <div className="max-w-6xl mx-auto h-full flex flex-col">
-            {/* Main Input Section */}
-            <div className="mb-3">
-              <Card className="border border-gray-100 shadow-sm">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
-                    Describe Your Symptoms
-                  </CardTitle>
-                  <CardDescription className="text-base">
-                    Be as detailed as possible. Include when symptoms started, severity, location, and any relevant
-                    context for the most accurate analysis.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    placeholder="Example: I've been experiencing a persistent headache for the past 2 days, along with mild fever (99.5°F) and fatigue. The headache is worse in the morning and I feel nauseous. I also have some sensitivity to light..."
-                    value={symptoms}
-                    onChange={(e) => setSymptoms(e.target.value)}
-                    className="min-h-[100px] text-base border-gray-100 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-400"
-                  />
-                  <div className="flex justify-between items-center">
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={handleVoiceInput}
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2 border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700 bg-transparent"
-                      >
-                        <Mic className="w-4 h-4" />
-                        Voice Input
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2 border-gray-300 text-gray-600 hover:bg-gray-50 hover:text-gray-700 bg-transparent"
-                      >
-                        <MapPin className="w-4 h-4" />
-                        Use Location
-                      </Button>
-                    </div>
-                    <Button
-                      onClick={handleAnalyze}
-                      disabled={isAnalyzing || !symptoms.trim()}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 font-semibold text-base"
-                    >
-                      {isAnalyzing ? (
-                        <>
-                          <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                          Analyzing...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4 mr-2" />
-                          Analyze Symptoms
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+        {/* Main Content - Centered Design */}
+        <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-12">
+            {/* Logo and Heading */}
+            <div className="space-y-6">
+              <div className="flex justify-center">
+                <div className="w-16 h-16 bg-[#C1121F] rounded-2xl flex items-center justify-center">
+                  <Stethoscope className="w-8 h-8 text-white" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <h1 className="text-5xl font-bold text-gray-900">Built to diagnose.</h1>
+                <p className="text-2xl text-gray-500">Designed to assist.</p>
+              </div>
             </div>
 
-            {/* Quick Prompts - Single Column */}
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Quick Start Prompts:</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {quickPrompts.map((prompt, index) => (
-                  <Card
-                    key={index}
-                    className="cursor-pointer hover:shadow-md transition-shadow border-gray-200 hover:border-[#C1121F]/30"
-                    onClick={() => setSymptoms(prompt)}
+            {/* Symptom Input */}
+            <div className="w-full max-w-2xl mx-auto">
+              <div className="relative">
+                <Textarea
+                  placeholder="Describe your symptoms in detail..."
+                  value={symptoms}
+                  onChange={(e) => setSymptoms(e.target.value)}
+                  className="w-full min-h-[120px] text-lg border-2 border-gray-200 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-400 shadow-sm"
+                />
+                <div className="absolute bottom-4 right-4 flex gap-2">
+                  <Button
+                    onClick={handleVoiceInput}
+                    variant="ghost"
+                    size="sm"
+                    className="text-gray-500 hover:text-gray-700"
                   >
-                    <CardContent className="p-4">
-                      <p className="text-sm text-gray-700">{prompt}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+                    <Mic className="w-5 h-5" />
+                  </Button>
+                  <Button
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing || !symptoms.trim()}
+                    className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 rounded-xl"
+                  >
+                    {isAnalyzing ? (
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    ) : (
+                      <Send className="w-4 h-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
+            </div>
+
+            {/* Example Cards */}
+            <div className="grid grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
+              {[
+                {
+                  title: "What are the symptoms of a migraine?",
+                  icon: "🧠",
+                  prompt:
+                    "I have a severe throbbing headache on one side of my head, along with nausea and sensitivity to light and sound. This has been going on for about 6 hours.",
+                },
+                {
+                  title: "Which symptoms indicate a cold vs flu?",
+                  icon: "🤧",
+                  prompt:
+                    "I have a runny nose, mild cough, and feel tired. My throat is slightly sore and I have a low-grade fever of 99.2°F that started yesterday.",
+                },
+                {
+                  title: "What lifestyle changes help with anxiety?",
+                  icon: "💭",
+                  prompt:
+                    "I've been feeling anxious and restless lately, having trouble sleeping, and my heart races sometimes. This has been happening for about 2 weeks.",
+                },
+                {
+                  title: "How serious is chest pain?",
+                  icon: "❤️",
+                  prompt:
+                    "I'm experiencing mild chest discomfort that comes and goes, especially when I take deep breaths. It started after exercising this morning.",
+                },
+              ].map((example, index) => (
+                <Card
+                  key={index}
+                  className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-2 border-gray-100 hover:border-[#C1121F]/20 rounded-2xl group"
+                  onClick={() => setSymptoms(example.prompt)}
+                >
+                  <div className="space-y-4">
+                    <div className="text-3xl">{example.icon}</div>
+                    <h3 className="text-lg font-semibold text-gray-900 text-left group-hover:text-[#C1121F] transition-colors">
+                      {example.title}
+                    </h3>
+                  </div>
+                </Card>
+              ))}
             </div>
 
             {/* Emergency Notice */}
-            <div className="mt-3">
-              <div className="flex justify-end">
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <AlertCircle className="w-3 h-3" />
-                  <span>For emergencies, call 911 immediately</span>
-                </div>
-              </div>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <AlertCircle className="w-4 h-4" />
+              <span>For medical emergencies, call 911 immediately</span>
             </div>
           </div>
         </div>
