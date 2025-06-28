@@ -268,6 +268,10 @@ export default function ProfilePage() {
               <HelpCircle className="w-4 h-4" />
               <span>Help & Support</span>
             </div>
+            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
+              <User className="w-4 h-4" />
+              <span>Profile Settings</span>
+            </div>
           </div>
         </div>
       </div>
@@ -276,31 +280,16 @@ export default function ProfilePage() {
       <div className="flex-1 flex flex-col pb-16">
         {/* Header */}
         <div className="px-6 py-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-              </Button>
-            </div>
-
-            {/* User Profile */}
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">
-                  {profile.firstName} {profile.lastName}
-                </div>
-                <div className="text-xs text-gray-500">{profile.email}</div>
-              </div>
-              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">{profile.firstName.charAt(0)}</span>
-              </div>
-            </div>
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
           </div>
         </div>
 

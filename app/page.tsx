@@ -372,59 +372,47 @@ export default function HomePage() {
               <HelpCircle className="w-4 h-4" />
               <span>Help & Support</span>
             </div>
+            <div
+              onClick={() => router.push("/profile")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <User className="w-4 h-4" />
+              <span>Profile Settings</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
-        {/* Header */}
-        <div className="px-8 py-4 border-b border-gray-100">
-          <div className="flex justify-end items-center">
-            {/* User Profile */}
-            <div
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
-              onClick={() => router.push("/profile")}
-            >
-              <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
-                <div className="text-xs text-gray-500">Manderson@gmail.com</div>
-              </div>
-              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">M</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Main Content - Centered Design */}
         <div className="flex-1 flex flex-col">
-          <div className="flex-1 flex flex-col items-center justify-center px-8 py-3">
-            <div className="w-full max-w-4xl mx-auto text-center space-y-6">
-              {/* Logo and Heading - Pushed up */}
-              <div className="space-y-3">
+          <div className="flex-1 flex flex-col items-center justify-start px-8 py-6">
+            <div className="w-full max-w-4xl mx-auto text-center space-y-4">
+              {/* Logo and Heading - Pushed up more */}
+              <div className="space-y-2">
                 <div className="flex justify-center">
-                  <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-12 h-12" />
+                  <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-10 h-10" />
                 </div>
 
                 <div className="space-y-1">
-                  <h1 className="text-4xl font-bold text-gray-900">Built to diagnose.</h1>
-                  <p className="text-xl text-gray-500">Designed to assist.</p>
+                  <h1 className="text-3xl font-bold text-gray-900">Built to diagnose.</h1>
+                  <p className="text-lg text-gray-500">Designed to assist.</p>
                 </div>
               </div>
 
               {/* Symptom Input Card - Smaller and centered */}
               <div className="w-full max-w-2xl mx-auto">
                 <Card className="border-2 border-gray-200 rounded-xl shadow-sm">
-                  <CardContent className="p-5">
+                  <CardContent className="p-4">
                     {/* Header */}
                     <div className="flex items-center gap-3 mb-3">
                       <Stethoscope className="w-5 h-5 text-[#C1121F]" />
-                      <h2 className="text-xl font-semibold text-gray-900">Describe Your Symptoms</h2>
+                      <h2 className="text-lg font-semibold text-gray-900">Describe Your Symptoms</h2>
                     </div>
 
                     {/* Subtitle */}
-                    <p className="text-gray-600 mb-4 text-left text-sm">
+                    <p className="text-gray-600 mb-3 text-left text-sm">
                       Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                     </p>
 
@@ -433,7 +421,7 @@ export default function HomePage() {
                       placeholder="Shortness of Breath"
                       value={symptoms}
                       onChange={(e) => setSymptoms(e.target.value)}
-                      className="w-full min-h-[100px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-4"
+                      className="w-full min-h-[80px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-3"
                     />
 
                     {/* Bottom Buttons */}
@@ -483,7 +471,7 @@ export default function HomePage() {
           </div>
 
           {/* Bottom Cards - Fixed at bottom */}
-          <div className="px-8 py-6 bg-gray-50 border-t border-gray-100">
+          <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
             <div className="grid grid-cols-4 gap-4 max-w-6xl mx-auto">
               {bottomCards.map((card, index) => {
                 const IconComponent = card.icon

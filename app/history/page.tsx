@@ -15,6 +15,7 @@ import {
   Users,
   TrendingUp,
   CheckCircle,
+  User,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -247,6 +248,13 @@ export default function HistoryPage() {
               <HelpCircle className="w-4 h-4" />
               <span>Help & Support</span>
             </div>
+            <div
+              onClick={() => router.push("/profile")}
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+            >
+              <User className="w-4 h-4" />
+              <span>Profile Settings</span>
+            </div>
           </div>
         </div>
       </div>
@@ -255,32 +263,16 @@ export default function HistoryPage() {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push("/")}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Button>
-            </div>
-
-            {/* User Profile */}
-            <div
-              className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors"
-              onClick={() => router.push("/profile")}
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/")}
+              className="text-gray-500 hover:text-gray-700"
             >
-              <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">Matthew Anderson</div>
-                <div className="text-xs text-gray-500">Manderson@gmail.com</div>
-              </div>
-              <div className="w-10 h-10 bg-[#C1121F] rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">M</span>
-              </div>
-            </div>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
           </div>
         </div>
 
