@@ -368,34 +368,32 @@ export default function HomePage() {
         </div>
 
         {/* Main Content - Centered Design */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8 py-8">
-          <div className="w-full max-w-4xl mx-auto text-center space-y-8">
-            {/* Logo and Heading */}
-            <div className="space-y-4">
+        <div className="flex-1 flex flex-col items-center justify-center px-8 py-3">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-6">
+            {/* Logo and Heading - Pushed up */}
+            <div className="space-y-3">
               <div className="flex justify-center">
-                <div className="w-16 h-16 bg-[#C1121F] rounded-2xl flex items-center justify-center">
-                  <Stethoscope className="w-8 h-8 text-white" />
-                </div>
+                <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-12 h-12" />
               </div>
 
-              <div className="space-y-2">
-                <h1 className="text-5xl font-bold text-gray-900">Built to diagnose.</h1>
-                <p className="text-2xl text-gray-500">Designed to assist.</p>
+              <div className="space-y-1">
+                <h1 className="text-4xl font-bold text-gray-900">Built to diagnose.</h1>
+                <p className="text-xl text-gray-500">Designed to assist.</p>
               </div>
             </div>
 
-            {/* Symptom Input Card - Matching the image design */}
-            <div className="w-full max-w-3xl mx-auto">
-              <Card className="border-2 border-gray-200 rounded-2xl shadow-sm">
-                <CardContent className="p-6">
+            {/* Symptom Input Card - Smaller and centered */}
+            <div className="w-full max-w-2xl mx-auto">
+              <Card className="border-2 border-gray-200 rounded-xl shadow-sm">
+                <CardContent className="p-5">
                   {/* Header */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
-                    <h2 className="text-2xl font-semibold text-gray-900">Describe Your Symptoms</h2>
+                  <div className="flex items-center gap-3 mb-3">
+                    <Stethoscope className="w-5 h-5 text-[#C1121F]" />
+                    <h2 className="text-xl font-semibold text-gray-900">Describe Your Symptoms</h2>
                   </div>
 
                   {/* Subtitle */}
-                  <p className="text-gray-600 mb-6 text-left">
+                  <p className="text-gray-600 mb-4 text-left text-sm">
                     Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
                   </p>
 
@@ -404,23 +402,25 @@ export default function HomePage() {
                     placeholder="Shortness of Breath"
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="w-full min-h-[120px] text-lg border-gray-200 rounded-xl px-4 py-4 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-6"
+                    className="w-full min-h-[100px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-4"
                   />
 
                   {/* Bottom Buttons */}
                   <div className="flex items-center justify-between">
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                       <Button
                         onClick={handleVoiceInput}
                         variant="outline"
-                        className="flex items-center gap-2 px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl bg-transparent"
+                        size="sm"
+                        className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
                       >
                         <Mic className="w-4 h-4" />
                         Voice Input
                       </Button>
                       <Button
                         variant="outline"
-                        className="flex items-center gap-2 px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl bg-transparent"
+                        size="sm"
+                        className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
                       >
                         <MapPin className="w-4 h-4" />
                         Use Location
@@ -429,7 +429,7 @@ export default function HomePage() {
                     <Button
                       onClick={handleAnalyze}
                       disabled={isAnalyzing || !symptoms.trim()}
-                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 rounded-xl flex items-center gap-2 font-semibold"
+                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 rounded-lg flex items-center gap-2 font-semibold"
                     >
                       {isAnalyzing ? (
                         <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -444,7 +444,7 @@ export default function HomePage() {
             </div>
 
             {/* Example Cards - 2x2 Grid, No Emojis */}
-            <div className="grid grid-cols-2 gap-4 w-full max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 gap-3 w-full max-w-3xl mx-auto">
               {[
                 {
                   title: "Migraine Symptoms",
@@ -469,22 +469,22 @@ export default function HomePage() {
               ].map((example, index) => (
                 <Card
                   key={index}
-                  className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-xl group text-left"
+                  className="p-3 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-lg group text-left"
                   onClick={() => setSymptoms(example.prompt)}
                 >
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#C1121F] transition-colors">
+                  <div className="space-y-1">
+                    <h3 className="text-base font-semibold text-gray-900 group-hover:text-[#C1121F] transition-colors">
                       {example.title}
                     </h3>
-                    <p className="text-sm text-gray-600">{example.description}</p>
+                    <p className="text-xs text-gray-600">{example.description}</p>
                   </div>
                 </Card>
               ))}
             </div>
 
             {/* Emergency Notice */}
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <AlertCircle className="w-4 h-4" />
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+              <AlertCircle className="w-3 h-3" />
               <span>For medical emergencies, call 911 immediately</span>
             </div>
           </div>
