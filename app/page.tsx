@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Send,
   Mic,
+  MapPin,
   Users,
   TrendingUp,
   CheckCircle,
@@ -21,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 
 export default function HomePage() {
   const router = useRouter()
@@ -222,10 +223,10 @@ export default function HomePage() {
   }
 
   const quickPrompts = [
-    "I have a really bad headache that won't go away and I feel nauseous",
-    "My throat is super sore and I can barely swallow anything",
-    "I've been coughing a lot and feel really tired and achy all over",
-    "My stomach hurts really bad and I keep feeling like I need to throw up",
+    "I have a severe throbbing headache on one side of my head, along with nausea and sensitivity to light and sound. This has been going on for about 6 hours.",
+    "I have a runny nose, mild cough, and feel tired. My throat is slightly sore and I have a low-grade fever of 99.2°F that started yesterday.",
+    "I've been feeling anxious and restless lately, having trouble sleeping, and my heart races sometimes. This has been happening for about 2 weeks.",
+    "I'm experiencing mild chest discomfort that comes and goes, especially when I take deep breaths. It started after exercising this morning.",
   ]
 
   return (
@@ -367,10 +368,10 @@ export default function HomePage() {
         </div>
 
         {/* Main Content - Centered Design */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8 py-12">
-          <div className="w-full max-w-4xl mx-auto text-center space-y-12">
+        <div className="flex-1 flex flex-col items-center justify-center px-8 py-8">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-8">
             {/* Logo and Heading */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex justify-center">
                 <div className="w-16 h-16 bg-[#C1121F] rounded-2xl flex items-center justify-center">
                   <Stethoscope className="w-8 h-8 text-white" />
@@ -383,77 +384,99 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Symptom Input */}
-            <div className="w-full max-w-2xl mx-auto">
-              <div className="relative">
-                <Textarea
-                  placeholder="Describe your symptoms in detail..."
-                  value={symptoms}
-                  onChange={(e) => setSymptoms(e.target.value)}
-                  className="w-full min-h-[120px] text-lg border-2 border-gray-200 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-400 shadow-sm"
-                />
-                <div className="absolute bottom-4 right-4 flex gap-2">
-                  <Button
-                    onClick={handleVoiceInput}
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <Mic className="w-5 h-5" />
-                  </Button>
-                  <Button
-                    onClick={handleAnalyze}
-                    disabled={isAnalyzing || !symptoms.trim()}
-                    className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 rounded-xl"
-                  >
-                    {isAnalyzing ? (
-                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    ) : (
-                      <Send className="w-4 h-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
+            {/* Symptom Input Card - Matching the image design */}
+            <div className="w-full max-w-3xl mx-auto">
+              <Card className="border-2 border-gray-200 rounded-2xl shadow-sm">
+                <CardContent className="p-6">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <Stethoscope className="w-6 h-6 text-[#C1121F]" />
+                    <h2 className="text-2xl font-semibold text-gray-900">Describe Your Symptoms</h2>
+                  </div>
+
+                  {/* Subtitle */}
+                  <p className="text-gray-600 mb-6 text-left">
+                    Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
+                  </p>
+
+                  {/* Text Input */}
+                  <Textarea
+                    placeholder="Shortness of Breath"
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    className="w-full min-h-[120px] text-lg border-gray-200 rounded-xl px-4 py-4 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-6"
+                  />
+
+                  {/* Bottom Buttons */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-4">
+                      <Button
+                        onClick={handleVoiceInput}
+                        variant="outline"
+                        className="flex items-center gap-2 px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl bg-transparent"
+                      >
+                        <Mic className="w-4 h-4" />
+                        Voice Input
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2 px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl bg-transparent"
+                      >
+                        <MapPin className="w-4 h-4" />
+                        Use Location
+                      </Button>
+                    </div>
+                    <Button
+                      onClick={handleAnalyze}
+                      disabled={isAnalyzing || !symptoms.trim()}
+                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-8 py-2 rounded-xl flex items-center gap-2 font-semibold"
+                    >
+                      {isAnalyzing ? (
+                        <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      Analyze Symptoms
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Example Cards */}
-            <div className="grid grid-cols-2 gap-6 w-full max-w-4xl mx-auto">
+            {/* Example Cards - 2x2 Grid, No Emojis */}
+            <div className="grid grid-cols-2 gap-4 w-full max-w-4xl mx-auto">
               {[
                 {
-                  title: "What are the symptoms of a migraine?",
-                  icon: "🧠",
-                  prompt:
-                    "I have a severe throbbing headache on one side of my head, along with nausea and sensitivity to light and sound. This has been going on for about 6 hours.",
+                  title: "Migraine Symptoms",
+                  description: "Severe throbbing headache with nausea and light sensitivity",
+                  prompt: quickPrompts[0],
                 },
                 {
-                  title: "Which symptoms indicate a cold vs flu?",
-                  icon: "🤧",
-                  prompt:
-                    "I have a runny nose, mild cough, and feel tired. My throat is slightly sore and I have a low-grade fever of 99.2°F that started yesterday.",
+                  title: "Cold vs Flu Symptoms",
+                  description: "Runny nose, cough, fatigue, and low-grade fever",
+                  prompt: quickPrompts[1],
                 },
                 {
-                  title: "What lifestyle changes help with anxiety?",
-                  icon: "💭",
-                  prompt:
-                    "I've been feeling anxious and restless lately, having trouble sleeping, and my heart races sometimes. This has been happening for about 2 weeks.",
+                  title: "Anxiety Symptoms",
+                  description: "Restlessness, sleep trouble, and racing heart",
+                  prompt: quickPrompts[2],
                 },
                 {
-                  title: "How serious is chest pain?",
-                  icon: "❤️",
-                  prompt:
-                    "I'm experiencing mild chest discomfort that comes and goes, especially when I take deep breaths. It started after exercising this morning.",
+                  title: "Chest Pain Assessment",
+                  description: "Mild chest discomfort that comes and goes",
+                  prompt: quickPrompts[3],
                 },
               ].map((example, index) => (
                 <Card
                   key={index}
-                  className="p-6 cursor-pointer hover:shadow-lg transition-all duration-200 border-2 border-gray-100 hover:border-[#C1121F]/20 rounded-2xl group"
+                  className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-xl group text-left"
                   onClick={() => setSymptoms(example.prompt)}
                 >
-                  <div className="space-y-4">
-                    <div className="text-3xl">{example.icon}</div>
-                    <h3 className="text-lg font-semibold text-gray-900 text-left group-hover:text-[#C1121F] transition-colors">
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-[#C1121F] transition-colors">
                       {example.title}
                     </h3>
+                    <p className="text-sm text-gray-600">{example.description}</p>
                   </div>
                 </Card>
               ))}
