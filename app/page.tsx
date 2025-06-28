@@ -386,112 +386,112 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
         {/* Main Content - Centered Design */}
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 flex flex-col items-center justify-start px-8 py-6">
-            <div className="w-full max-w-4xl mx-auto text-center space-y-4">
-              {/* Logo and Heading - Pushed up more */}
-              <div className="space-y-2">
-                <div className="flex justify-center">
-                  <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-10 h-10" />
-                </div>
-
-                <div className="space-y-1">
-                  <h1 className="text-3xl font-bold text-gray-900">Built to diagnose.</h1>
-                  <p className="text-lg text-gray-500">Designed to assist.</p>
-                </div>
+        <div className="flex-1 flex flex-col items-center justify-center px-16 py-8">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-6">
+            {/* Logo and Heading */}
+            <div className="space-y-3">
+              <div className="flex justify-center">
+                <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-12 h-12" />
               </div>
 
-              {/* Symptom Input Card - Smaller and centered */}
-              <div className="w-full max-w-2xl mx-auto">
-                <Card className="border-2 border-gray-200 rounded-xl shadow-sm">
-                  <CardContent className="p-4">
-                    {/* Header */}
-                    <div className="flex items-center gap-3 mb-3">
-                      <Stethoscope className="w-5 h-5 text-[#C1121F]" />
-                      <h2 className="text-lg font-semibold text-gray-900">Describe Your Symptoms</h2>
-                    </div>
-
-                    {/* Subtitle */}
-                    <p className="text-gray-600 mb-3 text-left text-sm">
-                      Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
-                    </p>
-
-                    {/* Text Input */}
-                    <Textarea
-                      placeholder="Shortness of Breath"
-                      value={symptoms}
-                      onChange={(e) => setSymptoms(e.target.value)}
-                      className="w-full min-h-[80px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-3"
-                    />
-
-                    {/* Bottom Buttons */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-3">
-                        <Button
-                          onClick={handleVoiceInput}
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
-                        >
-                          <Mic className="w-4 h-4" />
-                          Voice Input
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
-                        >
-                          <MapPin className="w-4 h-4" />
-                          Use Location
-                        </Button>
-                      </div>
-                      <Button
-                        onClick={handleAnalyze}
-                        disabled={isAnalyzing || !symptoms.trim()}
-                        className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 rounded-lg flex items-center gap-2 font-semibold"
-                      >
-                        {isAnalyzing ? (
-                          <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        ) : (
-                          <Send className="w-4 h-4" />
-                        )}
-                        Analyze Symptoms
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Emergency Notice */}
-              <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                <AlertCircle className="w-3 h-3" />
-                <span>For medical emergencies, call 911 immediately</span>
+              <div className="space-y-1">
+                <h1 className="text-4xl font-bold text-gray-900">Built to diagnose.</h1>
+                <p className="text-xl text-gray-500">Designed to assist.</p>
               </div>
             </div>
-          </div>
 
-          {/* Bottom Cards - Fixed at bottom */}
-          <div className="px-8 py-4 bg-gray-50 border-t border-gray-100">
-            <div className="grid grid-cols-4 gap-4 max-w-6xl mx-auto">
-              {bottomCards.map((card, index) => {
-                const IconComponent = card.icon
-                return (
-                  <Card
-                    key={index}
-                    className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-lg group text-center bg-white"
-                    onClick={() => setSymptoms(card.prompt)}
-                  >
-                    <div className="space-y-3">
-                      <h3 className="text-sm font-medium text-gray-900 group-hover:text-[#C1121F] transition-colors leading-tight">
-                        {card.question}
-                      </h3>
-                      <div className="flex justify-center">
-                        <IconComponent className="w-8 h-8 text-gray-400 group-hover:text-[#C1121F] transition-colors" />
-                      </div>
+            {/* Symptom Input Card */}
+            <div className="w-full max-w-2xl mx-auto">
+              <Card className="border-2 border-gray-200 rounded-xl shadow-sm">
+                <CardContent className="p-5">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <Stethoscope className="w-5 h-5 text-[#C1121F]" />
+                    <h2 className="text-xl font-semibold text-gray-900">Describe Your Symptoms</h2>
+                  </div>
+
+                  {/* Subtitle */}
+                  <p className="text-gray-600 mb-4 text-left text-sm">
+                    Be as detailed as possible. Include when symptoms started, severity, and any relevant context.
+                  </p>
+
+                  {/* Text Input */}
+                  <Textarea
+                    placeholder="Shortness of Breath"
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    className="w-full min-h-[100px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#C1121F]/20 focus:border-[#C1121F] resize-none placeholder:text-gray-500 mb-4"
+                  />
+
+                  {/* Bottom Buttons */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-3">
+                      <Button
+                        onClick={handleVoiceInput}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
+                      >
+                        <Mic className="w-4 h-4" />
+                        Voice Input
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2 px-3 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg bg-transparent"
+                      >
+                        <MapPin className="w-4 h-4" />
+                        Use Location
+                      </Button>
                     </div>
-                  </Card>
-                )
-              })}
+                    <Button
+                      onClick={handleAnalyze}
+                      disabled={isAnalyzing || !symptoms.trim()}
+                      className="bg-[#C1121F] hover:bg-[#9e0e19] text-white px-6 py-2 rounded-lg flex items-center gap-2 font-semibold"
+                    >
+                      {isAnalyzing ? (
+                        <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                      Analyze Symptoms
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Emergency Notice */}
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+              <AlertCircle className="w-3 h-3" />
+              <span>For medical emergencies, call 911 immediately</span>
+            </div>
+
+            {/* Bottom Cards - Moved closer */}
+            <div className="pt-4">
+              <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
+                {bottomCards.map((card, index) => {
+                  const IconComponent = card.icon
+                  return (
+                    <Card
+                      key={index}
+                      className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-lg group bg-white relative"
+                      onClick={() => setSymptoms(card.prompt)}
+                    >
+                      <div className="space-y-3">
+                        {/* Icon in top right corner */}
+                        <div className="flex justify-end">
+                          <IconComponent className="w-6 h-6 text-gray-400 group-hover:text-[#C1121F] transition-colors" />
+                        </div>
+                        {/* Question text */}
+                        <h3 className="text-sm font-medium text-gray-900 group-hover:text-[#C1121F] transition-colors leading-tight text-left">
+                          {card.question}
+                        </h3>
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
