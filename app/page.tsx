@@ -225,13 +225,6 @@ export default function HomePage() {
     }
   }
 
-  const quickPrompts = [
-    "I have a severe throbbing headache on one side of my head, along with nausea and sensitivity to light and sound. This has been going on for about 6 hours.",
-    "I have a runny nose, mild cough, and feel tired. My throat is slightly sore and I have a low-grade fever of 99.2°F that started yesterday.",
-    "I've been feeling anxious and restless lately, having trouble sleeping, and my heart races sometimes. This has been happening for about 2 weeks.",
-    "I'm experiencing mild chest discomfort that comes and goes, especially when I take deep breaths. It started after exercising this morning.",
-  ]
-
   const bottomCards = [
     {
       question: "What are the symptoms of hypertension?",
@@ -374,10 +367,15 @@ export default function HomePage() {
             </div>
             <div
               onClick={() => router.push("/profile")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation"
             >
-              <User className="w-4 h-4" />
-              <span>Profile Settings</span>
+              <div className="w-6 h-6 bg-[#C1121F] rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-xs">M</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-gray-900 truncate">Matthew Anderson</div>
+                <div className="text-xs text-gray-500 truncate">Manderson@gmail.com</div>
+              </div>
             </div>
           </div>
         </div>
@@ -386,8 +384,8 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
         {/* Main Content - Centered Design */}
-        <div className="flex-1 flex flex-col items-center justify-center px-16 py-8">
-          <div className="w-full max-w-4xl mx-auto text-center space-y-6">
+        <div className="flex-1 flex items-center justify-center px-16">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-8">
             {/* Logo and Heading */}
             <div className="space-y-3">
               <div className="flex justify-center">
@@ -467,31 +465,29 @@ export default function HomePage() {
               <span>For medical emergencies, call 911 immediately</span>
             </div>
 
-            {/* Bottom Cards - Moved closer */}
-            <div className="pt-4">
-              <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
-                {bottomCards.map((card, index) => {
-                  const IconComponent = card.icon
-                  return (
-                    <Card
-                      key={index}
-                      className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-lg group bg-white relative"
-                      onClick={() => setSymptoms(card.prompt)}
-                    >
-                      <div className="space-y-3">
-                        {/* Icon in top right corner */}
-                        <div className="flex justify-end">
-                          <IconComponent className="w-6 h-6 text-gray-400 group-hover:text-[#C1121F] transition-colors" />
-                        </div>
-                        {/* Question text */}
-                        <h3 className="text-sm font-medium text-gray-900 group-hover:text-[#C1121F] transition-colors leading-tight text-left">
-                          {card.question}
-                        </h3>
+            {/* Bottom Cards - Directly under symptom input */}
+            <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {bottomCards.map((card, index) => {
+                const IconComponent = card.icon
+                return (
+                  <Card
+                    key={index}
+                    className="p-4 cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-[#C1121F]/30 rounded-lg group bg-white relative min-h-[120px]"
+                    onClick={() => setSymptoms(card.prompt)}
+                  >
+                    <div className="flex flex-col h-full">
+                      {/* Question text at top */}
+                      <h3 className="text-sm font-medium text-gray-900 group-hover:text-[#C1121F] transition-colors leading-tight text-left mb-auto">
+                        {card.question}
+                      </h3>
+                      {/* Icon in bottom right corner */}
+                      <div className="flex justify-end mt-4">
+                        <IconComponent className="w-6 h-6 text-gray-400 group-hover:text-[#C1121F] transition-colors" />
                       </div>
-                    </Card>
-                  )
-                })}
-              </div>
+                    </div>
+                  </Card>
+                )
+              })}
             </div>
           </div>
         </div>

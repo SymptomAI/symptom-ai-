@@ -180,36 +180,5 @@ DISCLAIMER: This analysis is for informational purposes only and should not repl
       // Call the analysis API directly
       const response = await fetch("/api/analyze-symptoms", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ symptoms: searchQuery }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to analyze symptoms")
-      }
-
-      const analysisData = await response.json()
-
-      // Update the current analysis data
-      setAnalysis(analysisData)
-      setUserSymptoms(searchQuery)
-
-      // Store in session storage
-      sessionStorage.setItem("symptomAnalysis", JSON.stringify(analysisData))
-      sessionStorage.setItem("userSymptoms", searchQuery)
-
-      // Save to detailed history
-      const detailedHistory = JSON.parse(localStorage.getItem("detailedSearchHistory") || "[]")
-      const today = new Date().toLocaleDateString()
-
-      let todayGroup = detailedHistory.find((group) => group.date === today)
-      if (!todayGroup) {
-        todayGroup = { date: today, searches: [] }
-        detailedHistory.unshift(todayGroup)
-      }
-
-      todayGroup.searches.unshift({
-        id: Date.now().toString(),
-        \
+        headers: {\
+          "Content-Type\": \"application\

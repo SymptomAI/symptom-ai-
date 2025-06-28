@@ -25,7 +25,6 @@ import {
   TrendingUp,
   CheckCircle,
   X,
-  User,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -133,7 +132,7 @@ export default function HelpPage() {
     {
       question: "How do I update my profile information?",
       answer:
-        "You can update your profile by clicking on 'Profile Settings' in the sidebar navigation. From there, you can edit your personal information, location, and medical history.",
+        "You can update your profile by clicking on your profile section in the sidebar navigation. From there, you can edit your personal information, location, and medical history.",
       category: "Account",
     },
     {
@@ -334,10 +333,15 @@ export default function HelpPage() {
             </div>
             <div
               onClick={() => router.push("/profile")}
-              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation font-medium text-sm"
+              className="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer touch-manipulation"
             >
-              <User className="w-4 h-4" />
-              <span>Profile Settings</span>
+              <div className="w-6 h-6 bg-[#C1121F] rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-xs">M</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-gray-900 truncate">Matthew Anderson</div>
+                <div className="text-xs text-gray-500 truncate">Manderson@gmail.com</div>
+              </div>
             </div>
           </div>
         </div>
