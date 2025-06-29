@@ -388,7 +388,7 @@ export default function HomePage() {
           <div className="w-full max-w-4xl mx-auto text-center space-y-8">
             {/* Logo and Heading */}
             <div className="space-y-3">
-              <div className="flex justify-center">
+              <div className="flex justify-center opacity-0">
                 <img src="/medical-cross-logo.png" alt="Medical Cross" className="w-12 h-12" />
               </div>
 
