@@ -306,7 +306,7 @@ export default function HomePage() {
         </div>
 
         {/* Navigation */}
-        <div className="p-4 flex-1 shadow-md">
+        <div className="p-4 flex-1 shadow-xl">
           <nav className="space-y-1 mb-6">
             <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
               <House className="w-4 h-4" />
