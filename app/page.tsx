@@ -308,7 +308,7 @@ export default function HomePage() {
         {/* Navigation */}
         <div className="p-4 flex-1 shadow-xl">
           <nav className="space-y-1 mb-6">
-            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm">
+            <div className="flex items-center gap-3 px-3 py-2 text-white bg-[#C1121F] rounded-lg font-medium text-sm bg-[rgba(94,94,94,1)]">
               <House className="w-4 h-4" />
               <span>New Analysis</span>
             </div>
@@ -384,7 +384,7 @@ export default function HomePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
         {/* Main Content - Centered Design */}
-        <div className="flex-1 flex items-center justify-center px-16 bg-[rgba(252,252,252,1)]">
+        <div className="flex-1 flex items-center justify-center px-16 bg-[rgba(246,246,246,1)]">
           <div className="w-full max-w-4xl mx-auto text-center space-y-8">
             {/* Logo and Heading */}
             <div className="space-y-3">
@@ -422,7 +422,7 @@ export default function HomePage() {
                   />
 
                   {/* Bottom Buttons */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between bg-white">
                     <div className="flex gap-3">
                       <Button
                         onClick={handleVoiceInput}
