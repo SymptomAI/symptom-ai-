@@ -461,8 +461,8 @@ export default function HomePage() {
 
             {/* Emergency Notice */}
             <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-              <AlertCircle className="w-3 h-3" />
-              <span>For medical emergencies, call 911 immediately</span>
+              
+              
             </div>
 
             {/* Bottom Cards - Directly under symptom input */}
