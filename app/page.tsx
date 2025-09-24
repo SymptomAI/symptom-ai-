@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import {
   Search,
-  HomeIcon as House,
+  Mouse as House,
   BookOpen,
   Clock,
   Settings,
@@ -17,7 +17,6 @@ import {
   TrendingUp,
   CheckCircle,
   Stethoscope,
-  AlertCircle,
   Pill,
   User,
   Activity,
@@ -385,7 +384,7 @@ export default function HomePage() {
       <div className="flex-1 flex flex-col bg-white">
         {/* Main Content - Centered Design */}
         <div className="flex-1 flex items-center justify-center px-16 bg-[rgba(246,246,246,1)]">
-          <div className="w-full max-w-4xl mx-auto text-center space-y-8">
+          <div className="w-full max-w-4xl mx-auto text-center space-y-6">
             {/* Logo and Heading */}
             <div className="space-y-3">
               <div className="flex justify-center opacity-0">
@@ -459,14 +458,8 @@ export default function HomePage() {
               </Card>
             </div>
 
-            {/* Emergency Notice */}
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-              
-              
-            </div>
-
-            {/* Bottom Cards - Directly under symptom input */}
-            <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {/* Bottom Cards - Moved up by reducing space-y from 8 to 6 and removing emergency notice spacing */}
+            <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto -mt-2">
               {bottomCards.map((card, index) => {
                 const IconComponent = card.icon
                 return (
