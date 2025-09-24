@@ -17,6 +17,7 @@ import {
   TrendingUp,
   CheckCircle,
   Stethoscope,
+  AlertCircle,
   Pill,
   User,
   Activity,
@@ -382,8 +383,8 @@ export default function HomePage() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white">
-        {/* Main Content - Centered Design */}
-        <div className="flex-1 flex items-center justify-center px-16 bg-[rgba(246,246,246,1)]">
+        {/* Main Content - Centered Design with even spacing */}
+        <div className="flex-1 flex items-center justify-center px-16 py-8 bg-[rgba(246,246,246,1)]">
           <div className="w-full max-w-4xl mx-auto text-center space-y-6">
             {/* Logo and Heading */}
             <div className="space-y-3">
@@ -458,8 +459,14 @@ export default function HomePage() {
               </Card>
             </div>
 
-            {/* Bottom Cards - Moved up by reducing space-y from 8 to 6 and removing emergency notice spacing */}
-            <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto -mt-2">
+            {/* Emergency Notice */}
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
+              <AlertCircle className="w-3 h-3" />
+              <span>For medical emergencies, call 911 immediately</span>
+            </div>
+
+            {/* Bottom Cards - Directly under symptom input */}
+            <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
               {bottomCards.map((card, index) => {
                 const IconComponent = card.icon
                 return (
