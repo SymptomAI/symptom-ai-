@@ -418,7 +418,7 @@ export default function HomePage() {
                     placeholder="Shortness of Breath"
                     value={symptoms}
                     onChange={(e) => setSymptoms(e.target.value)}
-                    className="w-full min-h-[100px] text-base border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none placeholder:text-gray-500 mb-4"
+                    className="w-full min-h-[100px] text-base border-gray-200 rounded-lg px-4 py-3 resize-none placeholder:text-gray-500 mb-4 text-[#696969] focus:ring-0 focus:border-gray-200 focus:outline-none"
                   />
 
                   {/* Bottom Buttons */}
